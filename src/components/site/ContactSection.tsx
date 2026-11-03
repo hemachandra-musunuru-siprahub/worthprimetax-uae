@@ -41,6 +41,7 @@ export function ContactSection({
         )}
       >
         <div>
+          <p className="label-slash mb-3">{HOME_CONTACT.label}</p>
           <Heading
             className={cn(
               "font-serif leading-[1.04] font-bold tracking-[-0.02em] text-primary",

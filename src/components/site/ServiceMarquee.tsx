@@ -1,11 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { SERVICES } from "@/data/services";
 
-const featuredServices = SERVICES.slice(0, 6);
-
-function PriceItem({ service }: { service: (typeof SERVICES)[number] }) {
-  const displayPrice = service.price.startsWith("From") ? service.price : "Price TBC";
-
+function ServiceItem({ service }: { service: (typeof SERVICES)[number] }) {
   return (
     <Link
       to="/services/$slug"
@@ -15,7 +11,6 @@ function PriceItem({ service }: { service: (typeof SERVICES)[number] }) {
       <span className="text-xs font-medium text-hero-foreground/80 transition-colors group-hover:text-hero-foreground sm:text-sm">
         {service.name}
       </span>
-      <span className="text-sm font-semibold text-hero-foreground">{displayPrice}</span>
       <span className="text-xs text-hero-foreground/35" aria-hidden>
         •
       </span>
@@ -23,12 +18,13 @@ function PriceItem({ service }: { service: (typeof SERVICES)[number] }) {
   );
 }
 
-export function PricingMarquee() {
+/** Scrolling strip of every service, shown under each page hero. */
+export function ServiceMarquee() {
   return (
-    <section aria-label="Featured service pricing" className="overflow-hidden border-y border-hero bg-hero">
+    <section aria-label="Our services" className="overflow-hidden border-y border-hero bg-hero">
       <div className="marquee-track flex w-max hover:[animation-play-state:paused] focus-within:[animation-play-state:paused]">
-        {[...featuredServices, ...featuredServices].map((service, index) => (
-          <PriceItem key={`${service.slug}-${index}`} service={service} />
+        {[...SERVICES, ...SERVICES].map((service, index) => (
+          <ServiceItem key={`${service.slug}-${index}`} service={service} />
         ))}
       </div>
     </section>

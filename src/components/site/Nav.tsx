@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { ChevronDown, ChevronRight, CreditCard, Menu, X } from "lucide-react";
+import { ChevronDown, ChevronRight, ExternalLink, Menu, X } from "lucide-react";
 import { SERVICES } from "@/data/services";
 import { LINKS } from "@/data/site";
 import { cn } from "@/lib/utils";
@@ -14,9 +14,10 @@ const NAV_WIDTH = "max-w-[1492px]";
 const navLink =
   "relative px-2 py-2 text-base font-bold whitespace-nowrap transition-colors after:pointer-events-none after:absolute after:inset-x-2 xl:px-3 xl:after:inset-x-3 after:bottom-0.5 after:h-0.5 after:rounded-full after:bg-current after:opacity-0 after:transition-opacity data-[status=active]:after:opacity-100";
 
-const NAV_ITEMS = [
-  { label: "About", to: "/about" as const },
-  { label: "Services", to: "/services" as const },
+// External links, in menu order after Services; both open in a new tab.
+const EXTERNAL_ITEMS = [
+  { label: "UAE Tax Payment", href: LINKS.uaeTaxPayment },
+  { label: "IRS Refund Status", href: LINKS.irs },
 ];
 
 export function Nav() {
@@ -99,96 +100,64 @@ export function Nav() {
           </Link>
 
           <div className="hidden flex-1 items-center gap-1 lg:flex">
-            {NAV_ITEMS.map((item) =>
-              item.label === "Services" ? (
-                <div
-                  key={item.label}
-                  className="relative"
-                  onMouseEnter={() => setServicesOpen(true)}
-                  onMouseLeave={() => setServicesOpen(false)}
-                >
-                  <Link to={item.to} className={cn(navLink, linkColor, "flex items-center gap-1")}>
-                    Services
-                    <ChevronDown className="size-3.5" />
-                  </Link>
-                  <div
-                    className={cn(
-                      "absolute left-0 top-full w-[420px] pt-3 transition-all",
-                      servicesOpen ? "visible opacity-100" : "invisible -translate-y-1 opacity-0",
-                    )}
-                  >
-                    <div className="grid grid-cols-2 gap-1 rounded-lg border border-nav-border bg-nav-menu p-2 shadow-xl">
-                      {SERVICES.map((s) => (
-                        <Link
-                          key={s.slug}
-                          to="/services/$slug"
-                          params={{ slug: s.slug }}
-                          className="rounded-md px-3 py-2 text-xs leading-snug text-foreground/75 transition-colors hover:bg-accent hover:text-foreground"
-                        >
-                          <span className="mr-1.5 text-primary">{s.number}</span>
-                          {s.name}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <Link key={item.label} to={item.to} className={cn(navLink, linkColor)}>
-                  {item.label}
-                </Link>
-              ),
-            )}
-            <Link to="/pricing" className={cn(navLink, linkColor)}>
-              Pricing
+            <Link to="/" activeOptions={{ exact: true }} className={cn(navLink, linkColor)}>
+              Home
             </Link>
-            <Link to="/insights" className={cn(navLink, linkColor)}>
-              Insights
+            <Link to="/about" className={cn(navLink, linkColor)}>
+              About Us
             </Link>
-            <Link to="/contact" className={cn(navLink, linkColor)}>
-              Contact
-            </Link>
-            <a
-              href={LINKS.irs}
-              target="_blank"
-              rel="noreferrer noopener"
-              className={cn(
-                "px-2 py-2 text-base font-bold whitespace-nowrap transition-colors xl:px-3",
-                overlay
-                  ? "text-hero-foreground/80 hover:text-hero-foreground"
-                  : "text-muted-foreground hover:text-nav-link-hover",
-              )}
+            <div
+              className="relative"
+              onMouseEnter={() => setServicesOpen(true)}
+              onMouseLeave={() => setServicesOpen(false)}
             >
-              IRS Refund Status
-            </a>
+              <Link to="/services" className={cn(navLink, linkColor, "flex items-center gap-1")}>
+                Services
+                <ChevronDown className="size-3.5" />
+              </Link>
+              <div
+                className={cn(
+                  "absolute left-0 top-full w-[420px] pt-3 transition-all",
+                  servicesOpen ? "visible opacity-100" : "invisible -translate-y-1 opacity-0",
+                )}
+              >
+                <div className="grid grid-cols-2 gap-1 rounded-lg border border-nav-border bg-nav-menu p-2 shadow-xl">
+                  {SERVICES.map((s) => (
+                    <Link
+                      key={s.slug}
+                      to="/services/$slug"
+                      params={{ slug: s.slug }}
+                      className="rounded-md px-3 py-2 text-xs leading-snug text-foreground/75 transition-colors hover:bg-accent hover:text-foreground"
+                    >
+                      <span className="mr-1.5 text-primary">{s.number}</span>
+                      {s.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+            {EXTERNAL_ITEMS.map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                target="_blank"
+                rel="noreferrer noopener"
+                className={cn(
+                  "px-2 py-2 text-base font-bold whitespace-nowrap transition-colors xl:px-3",
+                  overlay
+                    ? "text-hero-foreground/80 hover:text-hero-foreground"
+                    : "text-muted-foreground hover:text-nav-link-hover",
+                )}
+              >
+                {item.label}
+              </a>
+            ))}
+            <Link to="/contact" className={cn(navLink, linkColor)}>
+              Contact Us
+            </Link>
           </div>
 
           <div className="ml-auto flex items-center gap-2">
-            {/* Icon-only below sm so both buttons, the logo and the menu fit on a phone. */}
-            <Link
-              to="/payment-methods"
-              aria-label="Pay here"
-              className={cn(
-                "inline-flex h-8 items-center gap-1.5 rounded-full border px-2 text-[0.8125rem] font-medium whitespace-nowrap transition-transform hover:scale-[1.03] sm:px-3",
-                overlay
-                  ? "border-hero-foreground/60 text-hero-foreground"
-                  : "border-primary bg-background text-primary",
-              )}
-            >
-              <CreditCard className="size-3.5" strokeWidth={1.75} aria-hidden />
-              <span className="hidden sm:inline">Pay Here</span>
-            </Link>
-            <a
-              href={LINKS.login}
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label="Login or register"
-              className={cn(
-                "inline-flex h-8 items-center rounded-lg bg-button px-2.5 text-[0.6875rem] font-medium tracking-wide whitespace-nowrap text-button-foreground uppercase transition-transform hover:scale-[1.03] sm:px-3 sm:text-xs",
-                overlay && "ring-1 ring-hero-foreground/25",
-              )}
-            >
-              Login<span className="hidden sm:inline">/Register</span>
-            </a>
             <button
               type="button"
               aria-label={open ? "Close menu" : "Open menu"}
@@ -258,7 +227,7 @@ export function Nav() {
             Home
           </MobileNavRow>
           <MobileNavRow to="/about" onNavigate={() => setOpen(false)}>
-            About
+            About Us
           </MobileNavRow>
           <li className="border-b border-nav-border">
             <div className="flex items-stretch">
@@ -294,41 +263,18 @@ export function Nav() {
               </ul>
             )}
           </li>
-          <MobileNavRow to="/pricing" onNavigate={() => setOpen(false)}>
-            Pricing
-          </MobileNavRow>
-          <MobileNavRow to="/insights" onNavigate={() => setOpen(false)}>
-            Insights
-          </MobileNavRow>
+          {EXTERNAL_ITEMS.map((item) => (
+            <li key={item.label} className="border-b border-nav-border">
+              <a href={item.href} target="_blank" rel="noreferrer noopener" className={mobileRow}>
+                {item.label}
+                <ExternalLink className="size-4 text-muted-foreground" aria-hidden />
+              </a>
+            </li>
+          ))}
           <MobileNavRow to="/contact" onNavigate={() => setOpen(false)}>
-            Contact
+            Contact Us
           </MobileNavRow>
-          <li className="border-b border-nav-border">
-            <a href={LINKS.irs} target="_blank" rel="noreferrer noopener" className={mobileRow}>
-              IRS Refund Status
-              <ChevronRight className="size-4 text-muted-foreground" aria-hidden />
-            </a>
-          </li>
         </ul>
-
-        <div className="mt-auto grid gap-3 p-6">
-          <a
-            href={LINKS.login}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="rounded-xl bg-button px-4 py-3 text-center text-sm font-medium tracking-wide text-button-foreground uppercase"
-          >
-            Login/Register
-          </a>
-          <Link
-            to="/payment-methods"
-            onClick={() => setOpen(false)}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-primary px-4 py-3 text-sm font-medium text-primary"
-          >
-            <CreditCard className="size-4" strokeWidth={1.75} aria-hidden />
-            Pay Here
-          </Link>
-        </div>
       </div>
     </>
   );
@@ -343,7 +289,7 @@ function MobileNavRow({
   onNavigate,
   children,
 }: {
-  to: "/" | "/about" | "/pricing" | "/insights" | "/contact";
+  to: "/" | "/about" | "/contact";
   onNavigate: () => void;
   children: ReactNode;
 }) {

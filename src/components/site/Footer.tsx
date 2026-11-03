@@ -2,18 +2,13 @@ import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   ArrowRight,
-  Building2,
-  ChartColumn,
   ChevronRight,
-  FileSearch,
   FileText,
   Instagram,
   Linkedin,
   Mail,
   MapPin,
   Phone,
-  ShieldCheck,
-  Users,
   Youtube,
   type LucideIcon,
 } from "lucide-react";
@@ -21,16 +16,8 @@ import { SERVICES } from "@/data/services";
 import { HAS_LINKEDIN, LINKS, OFFICES } from "@/data/site";
 import { Container } from "./primitives";
 import { WhatsAppIcon } from "./ContactCluster";
+import { SERVICE_ICONS } from "./serviceIcons";
 import logoImage from "@/assets/worthprime-logo-2026.webp";
-
-const SERVICE_ICONS: Record<string, LucideIcon> = {
-  "us-tax-services": FileText,
-  "business-formation-entity-structuring": Building2,
-  "accounting-bookkeeping": ChartColumn,
-  "us-payroll-services": Users,
-  "audit-financial-assurance": ShieldCheck,
-  "irs-audit-notice-resolution": FileSearch,
-};
 
 // YouTube shows as a placeholder until the client supplies its profile.
 const SOCIALS: { label: string; Icon: LucideIcon; href?: string }[] = [
@@ -108,7 +95,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
-              Your trusted partner for U.S. tax, compliance and business advisory services.
+              One partner. Multiple financial needs. Connected solutions.
             </p>
 
             <ul className="mt-5 space-y-2.5">
@@ -196,17 +183,15 @@ export function Footer() {
           <nav aria-label="Company">
             <ColumnHeading>Company</ColumnHeading>
             <ul className="mt-3 max-w-56 max-sm:grid max-sm:max-w-none max-sm:grid-cols-2 max-sm:gap-x-6">
-              <FooterRowLink to="/about">About</FooterRowLink>
-              <FooterRowLink to="/pricing">Pricing</FooterRowLink>
-              <FooterRowLink to="/insights">Insights</FooterRowLink>
-              <FooterRowLink to="/contact">Contact</FooterRowLink>
-              <FooterRowLink href={LINKS.login}>Log in</FooterRowLink>
+              <FooterRowLink to="/about">About Us</FooterRowLink>
+              <FooterRowLink to="/contact">Contact Us</FooterRowLink>
+              <FooterRowLink href={LINKS.uaeTaxPayment}>UAE Tax Payment</FooterRowLink>
               <FooterRowLink href={LINKS.irs}>IRS Refund Status</FooterRowLink>
             </ul>
           </nav>
 
           <div>
-            <ColumnHeading>Offices</ColumnHeading>
+            <ColumnHeading>Office</ColumnHeading>
             <ul className="mt-3 divide-y divide-border">
               {OFFICES.map((o) => (
                 <li key={o.label} className="flex gap-3 py-3 first:pt-2 last:pb-0">
@@ -259,7 +244,7 @@ function FooterRowLink({
   href,
 }: {
   children: ReactNode;
-  to?: "/about" | "/pricing" | "/insights" | "/contact";
+  to?: "/about" | "/contact";
   href?: string;
 }) {
   const className = `group flex items-center justify-between gap-4 py-1.5 text-sm text-footer-link transition-colors hover:text-footer-link-hover ${focusRing}`;

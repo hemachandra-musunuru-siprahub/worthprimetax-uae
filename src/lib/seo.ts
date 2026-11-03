@@ -82,14 +82,6 @@ export function serviceCrumbs(service: { slug: string; name: string }): Crumb[] 
   ];
 }
 
-export function insightCrumbs(insight: { slug: string; title: string }): Crumb[] {
-  return [
-    { name: "Home", path: "/" },
-    { name: "Insights", path: "/insights" },
-    { name: insight.title, path: `/insights/${insight.slug}` },
-  ];
-}
-
 export function breadcrumbJsonLd(crumbs: Crumb[]) {
   return jsonLdScript({
     "@context": "https://schema.org",

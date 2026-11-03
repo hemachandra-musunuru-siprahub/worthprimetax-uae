@@ -1,12 +1,12 @@
 export type CountryCode = { iso: string; name: string; dial: string };
 
 /**
- * International dialling codes for the enquiry form's phone field. The United States is the
- * default, the firm's other office countries follow it, then every country in name order.
+ * International dialling codes for the enquiry form's phone field. The UAE is the default, the
+ * United States (expat clients) and India follow it, then every country in name order.
  */
 const PINNED: CountryCode[] = [
-  { iso: "US", name: "United States", dial: "+1" },
   { iso: "AE", name: "United Arab Emirates", dial: "+971" },
+  { iso: "US", name: "United States", dial: "+1" },
   { iso: "IN", name: "India", dial: "+91" },
 ];
 
@@ -210,7 +210,7 @@ const OTHERS: CountryCode[] = [
 
 export const COUNTRY_CODES: CountryCode[] = [...PINNED, ...OTHERS];
 
-export const DEFAULT_COUNTRY = "US";
+export const DEFAULT_COUNTRY = "AE";
 
 export function getCountryCode(iso: string) {
   return COUNTRY_CODES.find((c) => c.iso === iso);

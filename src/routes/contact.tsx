@@ -45,7 +45,7 @@ export const Route = createFileRoute("/contact")({
 function ContactPage() {
   return (
     <>
-      {/* No PricingMarquee here: the client asked for it to be removed from the contact page. */}
+      {/* No ServiceMarquee here: the client asked for it to be removed from the contact page. */}
       <ContactSection asPageHeading compact />
 
       <section aria-labelledby="contact-details" className="pt-5 pb-10 sm:pb-12">
@@ -92,7 +92,7 @@ function ContactPage() {
             </ul>
           </div>
 
-          <ul className="mt-3 grid gap-3 lg:grid-cols-3 lg:gap-4">
+          <ul className="mt-3 grid gap-3 lg:gap-4">
             {OFFICES.map((office) => (
               <li
                 key={office.label}
