@@ -1,27 +1,27 @@
 import {
+  Building2,
   Calculator,
-  FilePen,
-  FileSearch,
+  FileCheck,
   FileText,
-  IdCard,
   Landmark,
+  Receipt,
   ShieldCheck,
+  Stamp,
   TrendingUp,
-  Undo2,
   Users,
   type LucideIcon,
 } from "lucide-react";
 
-/** One icon per service, keyed by slug, for lists that show every service (e.g. the price table). */
+/** One icon per service, keyed by slug, for lists that show services (e.g. the footer). */
 export const SERVICE_ICONS: Record<string, LucideIcon> = {
-  "us-tax-services": FileText,
-  "business-formation-entity-structuring": Landmark,
+  "corporate-tax": Landmark,
+  "vat-compliance": Receipt,
   "accounting-bookkeeping": Calculator,
-  "us-payroll-services": Users,
-  "audit-financial-assurance": TrendingUp,
-  "irs-audit-notice-resolution": FileSearch,
-  "fbar-fatca-boir-compliance": ShieldCheck,
-  "itin-services": IdCard,
-  "amended-tax-returns": Undo2,
-  "legal-business-document-drafting": FilePen,
+  "business-incorporation-dissolution": Building2,
+  "payroll-services": Users,
+  "pro-visa-services": Stamp,
+  "us-expat-tax-filing": FileText,
+  "statutory-financial-audit": TrendingUp,
+  "e-invoicing": FileCheck,
+  "anti-money-laundering": ShieldCheck,
 };

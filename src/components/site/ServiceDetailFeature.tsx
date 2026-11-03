@@ -3,7 +3,7 @@ import { getServiceFaqs } from "@/data/serviceFaqs";
 import { Container } from "./primitives";
 import { BackdropHero } from "./BackdropHero";
 import { CapabilityShowcase } from "./CapabilityShowcase";
-import { PricingMarquee } from "./PricingMarquee";
+import { ServiceMarquee } from "./ServiceMarquee";
 import { ServiceFaqs } from "./ServiceFaqs";
 import type { ServiceDetailMedia } from "./serviceDetailMedia";
 
@@ -30,7 +30,7 @@ export function ServiceDetailFeature({
         showCta={false}
       />
 
-      <PricingMarquee />
+      <ServiceMarquee />
 
       <CapabilityShowcase service={service} />
 

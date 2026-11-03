@@ -170,6 +170,25 @@ export function CapabilityShowcase({
           ))}
         </ul>
 
+        {service.closing && (
+          <div className="mx-auto mt-10 max-w-3xl space-y-2 text-center">
+            {service.closing.map((line, i, lines) => (
+              <p
+                key={line}
+                className={cn(
+                  "leading-relaxed",
+                  // The last line is the document's short sign-off; earlier lines are body copy.
+                  i === lines.length - 1
+                    ? "font-serif text-lg font-semibold text-primary"
+                    : "text-muted-foreground",
+                )}
+              >
+                {line}
+              </p>
+            ))}
+          </div>
+        )}
+
         <div className="mt-10 flex justify-center">
           <Link
             to="/contact"
