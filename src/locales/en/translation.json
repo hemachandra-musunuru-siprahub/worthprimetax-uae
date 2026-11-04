@@ -137,9 +137,8 @@
     }
   ],
   "clients": {
-    "label": "What Our Clients Say",
-    "heading": "Trusted by Businesses.",
-    "headingMuted": "Valued by Clients.",
+    "heading": "What Our Clients Say",
+    "subheading": "Trusted by Businesses. Valued by Clients.",
     "intro": "At WorthPrime Tax, our greatest measure of success is the confidence our clients place in us. From entrepreneurs and SMEs to established businesses and individuals, we are proud to be part of our clients’ financial and business journeys.",
     "tagline": "Real businesses. Real relationships. Reliable support."
   },
@@ -214,7 +213,7 @@
     "abuzer": {
       "name": "Abuzer Ahmed Siddiqui",
       "title": "Co-Founder",
-      "credential": "Qualified Company Secretary (ICSI) · 15+ years · PwC and Deloitte",
+      "credential": "Ex-PwC · Qualified Company Secretary (ICSI) · 15+ years · Deloitte",
       "summary": "His expertise encompasses U.S. Corporate Tax, U.S. Payroll, Middle East Corporate Tax and VAT, together with the incorporation and dissolution of businesses across these jurisdictions.",
       "bio": [
         "A Qualified Company Secretary from ICSI, Abuzer brings more than 15 years of multifaceted experience spanning accounting, taxation, payroll, due diligence, legal and compliance services, with professional experience with PwC and Deloitte, across the U.S., UAE and India. His expertise encompasses U.S. Corporate Tax, U.S. Payroll, Middle East Corporate Tax and VAT, together with the incorporation and dissolution of businesses across these jurisdictions.",
@@ -225,7 +224,7 @@
     "jafiruddin": {
       "name": "Jafiruddin Mohammad",
       "title": "Co-Founder",
-      "credential": "Certified Accountant · 15 years · PwC and PepsiCo",
+      "credential": "Ex-PwC · Certified Accountant · 15 years · PepsiCo",
       "summary": "Brings a distinctive blend of corporate discipline and entrepreneurial perspective to WorthPrime Tax.",
       "bio": [
         "A Certified Accountant with 15 years of experience across audit, accounting, financial planning and tax, Jafiruddin brings a distinctive blend of corporate discipline and entrepreneurial perspective to WorthPrime Tax. His professional journey includes management roles with global organisations such as PwC and PepsiCo, where he worked across financial strategy, reporting and rigorous compliance.",
@@ -500,18 +499,19 @@
     "heading": "Bring us the complexity.",
     "headingAccent": "We’ll help bring clarity to it.",
     "intro": "Whether you are managing UAE Corporate Tax, preparing a VAT return, maintaining your books, preparing for an Audit, establishing a business, managing payroll or navigating U.S. Tax from the UAE, the right conversation can make all the difference.",
-    "replyNote": "Tell us what you need.",
+    "prompt": "Tell us what you need.",
     "callUs": "Call Us",
     "whatsapp": "WhatsApp",
     "emailUs": "Drop Us an Email",
     "visitUs": "Visit Us",
     "phoneNumber": "Phone Number",
     "submit": "Submit Request",
-    "detailsHeading": "Contact Details",
+    "detailsHeading": "Contact WorthPrime Tax",
     "detailsIntro": "Reach out to our office or connect with us directly.",
     "officeLabel": "WorthPrime Tax",
     "regionName": "United Arab Emirates",
-    "flagAlt": "{{region}} flag"
+    "flagAlt": "{{region}} flag",
+    "speakToSpecialist": "Speak to a Tax Specialist"
   },
   "quickContact": {
     "label": "Quick contact",

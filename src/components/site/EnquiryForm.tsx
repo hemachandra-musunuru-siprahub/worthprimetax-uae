@@ -3,7 +3,6 @@ import {
   ArrowRight,
   Check,
   ChevronDown,
-  Clock,
   CircleAlert,
   Loader2,
   Mail,
@@ -478,10 +477,6 @@ export function EnquiryForm({
               </Heading>
               <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
                 {t("enquiry.success")}
-              </p>
-              <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary/8 px-4 py-2 text-sm font-semibold text-primary">
-                <Clock className="size-4" aria-hidden />
-                {t("contact.replyNote")}
               </p>
               <button
                 type="button"

@@ -28,7 +28,7 @@ export function CtaBand() {
                 {t("contact.heading")} {t("contact.headingAccent")}
               </h2>
               <p className="mt-3 max-w-lg text-[0.95rem] leading-relaxed text-hero-foreground/85 sm:text-base">
-                {t("contact.replyNote")}
+                {t("contact.prompt")}
               </p>
 
               <div className="mt-4 flex flex-wrap gap-3 max-sm:mt-5 max-sm:grid">
