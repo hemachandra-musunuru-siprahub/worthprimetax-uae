@@ -3,7 +3,6 @@ import {
   ArrowRight,
   Check,
   ChevronDown,
-  Clock,
   CircleAlert,
   Loader2,
   Mail,
@@ -12,7 +11,7 @@ import {
 } from "lucide-react";
 import { COUNTRY_CODES, DEFAULT_COUNTRY, getCountryCode } from "@/data/countryCodes";
 import { SERVICES } from "@/data/services";
-import { HOME_CONTACT, LINKS } from "@/data/site";
+import { LINKS } from "@/data/site";
 import {
   enquirySchema,
   OTHER_SERVICE,
@@ -455,10 +454,6 @@ export function EnquiryForm({
               <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
                 Your enquiry has been sent successfully. A member of our team will get back to you
                 soon.
-              </p>
-              <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary/8 px-4 py-2 text-sm font-semibold text-primary">
-                <Clock className="size-4" aria-hidden />
-                {HOME_CONTACT.replyNote}
               </p>
               <button
                 type="button"

@@ -17,7 +17,6 @@ export function ContactSection({
   asPageHeading?: boolean;
   compact?: boolean;
 }) {
-  const Heading = asPageHeading ? "h1" : "h2";
   const value = compact ? "text-[0.95rem]" : "text-lg";
   return (
     <Section
@@ -41,20 +40,29 @@ export function ContactSection({
         )}
       >
         <div>
-          <p className="label-slash mb-3">{HOME_CONTACT.label}</p>
-          <Heading
-            className={cn(
-              "font-serif leading-[1.04] font-bold tracking-[-0.02em] text-primary",
-              // The contact page hero uses a smaller heading than the home page section.
-              asPageHeading
-                ? "text-[clamp(1.75rem,3vw,2.5rem)]"
-                : compact
-                  ? "text-[clamp(2rem,4vw,3.25rem)]"
-                  : "text-[clamp(2.4rem,5vw,4.25rem)]",
-            )}
-          >
-            {HOME_CONTACT.heading} <span className="block">{HOME_CONTACT.headingAccent}</span>
-          </Heading>
+          {asPageHeading ? (
+            // The contact page leads with "Let's Talk" as its large title, as the client asked.
+            <>
+              <h1 className="font-serif text-[clamp(2.4rem,5vw,4rem)] leading-[1.02] font-bold tracking-[-0.02em] text-primary">
+                {HOME_CONTACT.label}
+              </h1>
+              <p className="mt-3 font-serif text-[clamp(1.25rem,2vw,1.6rem)] leading-snug font-semibold text-primary">
+                {HOME_CONTACT.heading} <span className="block">{HOME_CONTACT.headingAccent}</span>
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="label-slash mb-3">{HOME_CONTACT.label}</p>
+              <h2
+                className={cn(
+                  "font-serif leading-[1.04] font-bold tracking-[-0.02em] text-primary",
+                  compact ? "text-[clamp(2rem,4vw,3.25rem)]" : "text-[clamp(2.4rem,5vw,4.25rem)]",
+                )}
+              >
+                {HOME_CONTACT.heading} <span className="block">{HOME_CONTACT.headingAccent}</span>
+              </h2>
+            </>
+          )}
           <p
             className={cn(
               "max-w-xl leading-relaxed text-foreground/80",
@@ -63,6 +71,28 @@ export function ContactSection({
           >
             {HOME_CONTACT.intro}
           </p>
+          <p className="mt-4 font-semibold text-primary">{HOME_CONTACT.prompt}</p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <button
+              type="button"
+              // Moves the visitor into the enquiry form beside this copy.
+              onClick={(e) =>
+                e.currentTarget
+                  .closest("section")
+                  ?.querySelector<HTMLInputElement>("form input")
+                  ?.focus()
+              }
+              className="inline-flex items-center rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-transform hover:scale-[1.03]"
+            >
+              {HOME_CONTACT.bookLabel}
+            </button>
+            <a
+              href={LINKS.phoneHref}
+              className="inline-flex items-center rounded-md border border-primary bg-background px-5 py-2.5 text-sm font-semibold text-primary transition-transform hover:scale-[1.03]"
+            >
+              {HOME_CONTACT.callLabel}
+            </a>
+          </div>
 
           <ul className={compact ? "mt-6 space-y-4" : "mt-8 space-y-5"}>
             <ContactLine icon={Phone} title="Call Us" compact={compact}>
@@ -80,12 +110,7 @@ export function ContactSection({
                 {LINKS.phone}
               </a>
             </ContactLine>
-            <ContactLine
-              icon={Mail}
-              title="Drop Us an Email"
-              note={HOME_CONTACT.replyNote}
-              compact={compact}
-            >
+            <ContactLine icon={Mail} title="Drop Us an Email" compact={compact}>
               <a
                 href={`mailto:${LINKS.email}`}
                 className={cn(value, "break-all text-foreground hover:text-primary")}
@@ -107,13 +132,11 @@ export function ContactSection({
 function ContactLine({
   icon: Icon,
   title,
-  note,
   compact,
   children,
 }: {
   icon: ComponentType<{ className?: string; strokeWidth?: number }>;
   title: string;
-  note?: string;
   compact?: boolean;
   children: ReactNode;
 }) {
@@ -125,7 +148,6 @@ function ContactLine({
       <div className="min-w-0">
         <p className={cn("font-semibold text-primary", compact && "text-sm")}>{title}</p>
         <div className="mt-0.5">{children}</div>
-        {note && <p className="mt-0.5 text-sm text-foreground/70">{note}</p>}
       </div>
     </li>
   );

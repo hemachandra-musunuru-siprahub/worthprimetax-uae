@@ -65,7 +65,9 @@ export const HOME_CONTACT = {
   headingAccent: "We’ll help bring clarity to it.",
   intro:
     "Whether you are managing UAE Corporate Tax, preparing a VAT return, maintaining your books, preparing for an Audit, establishing a business, managing payroll or navigating U.S. Tax from the UAE, the right conversation can make all the difference.",
-  replyNote: "Tell us what you need.",
+  prompt: "Tell us what you need.",
+  bookLabel: "Book a Consultation",
+  callLabel: "Speak to a Tax Specialist",
 };
 
 export const ABOUT_STORY = {
@@ -77,7 +79,7 @@ export const FOUNDERS = [
   {
     name: "Abuzer Ahmed Siddiqui",
     title: "Co-Founder",
-    credential: "Qualified Company Secretary (ICSI) · 15+ years · PwC and Deloitte",
+    credential: "Ex-PwC · Qualified Company Secretary (ICSI) · 15+ years · Deloitte",
     summary:
       "His expertise encompasses U.S. Corporate Tax, U.S. Payroll, Middle East Corporate Tax and VAT, together with the incorporation and dissolution of businesses across these jurisdictions.",
     bio: [
@@ -89,7 +91,7 @@ export const FOUNDERS = [
   {
     name: "Jafiruddin Mohammad",
     title: "Co-Founder",
-    credential: "Certified Accountant · 15 years · PwC and PepsiCo",
+    credential: "Ex-PwC · Certified Accountant · 15 years · PepsiCo",
     summary:
       "Brings a distinctive blend of corporate discipline and entrepreneurial perspective to WorthPrime Tax.",
     bio: [
@@ -114,9 +116,8 @@ export const FOUNDERS_CLOSING = {
  * document asks for them to be added. Until then the section shows its heading and intro only.]
  */
 export const CLIENT_EXPERIENCE = {
-  label: "What Our Clients Say",
-  heading: "Trusted by Businesses.",
-  headingMuted: "Valued by Clients.",
+  heading: "What Our Clients Say",
+  subheading: "Trusted by Businesses. Valued by Clients.",
   intro:
     "At WorthPrime Tax, our greatest measure of success is the confidence our clients place in us. From entrepreneurs and SMEs to established businesses and individuals, we are proud to be part of our clients’ financial and business journeys.",
   tagline: "Real businesses. Real relationships. Reliable support.",
@@ -126,7 +127,7 @@ export const CONTACT_PAGE = {
   title: "Contact WorthPrime Tax | Tax & Accounting in Dubai, UAE",
   description:
     "Call, email or WhatsApp WorthPrime Tax, or send an enquiry. Office in Al Karama, Dubai, UAE.",
-  detailsHeading: "Contact Details",
+  detailsHeading: "Contact WorthPrime Tax",
   detailsIntro: "Reach out to our office or connect with us directly.",
 };
 

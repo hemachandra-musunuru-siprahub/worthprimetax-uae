@@ -52,11 +52,12 @@ function Index() {
         <Hero />
         <ServiceMarquee />
       </div>
+      {/* Follows the hero intro, in the order of the client's document. */}
+      <WhatComesNext />
       <ServicesGrid />
       <ProofSection />
       <ClientExperience />
       <Faq />
-      <WhatComesNext />
       <ContactSection compact />
     </>
   );
@@ -160,9 +161,14 @@ function Hero() {
               Business does not stand still. Neither do its responsibilities. Tax regulations
               evolve. Businesses grow. New opportunities emerge. And with every stage of that
               journey comes a new set of financial and compliance considerations.
+              {/* The client's document puts this line straight after the opening paragraph. */}
+              <span className="mt-[0.5lh] block font-semibold text-primary max-sm:text-[0.8125rem]">
+                At WorthPrime Tax, we turn financial complexity into confident decisions.
+                {!introOpen && <> {introToggle}</>}
+              </span>
               {/* Opened, the rest starts on its own line after a small gap (half a line), and "Read less"
                   follows it. */}
-              {introOpen ? (
+              {introOpen && (
                 <span id="hero-intro-more" className="mt-[0.5lh] block">
                   Since 2018, we have been supporting businesses, entrepreneurs and individuals
                   across Dubai and the UAE with comprehensive, practical and reliable solutions
@@ -174,12 +180,7 @@ function Hero() {
                     well-positioned for what comes next. {introToggle}
                   </span>
                 </span>
-              ) : (
-                <> {introToggle}</>
               )}
-            </p>
-            <p className="mt-3 font-semibold text-primary max-sm:mt-2 max-sm:text-[0.8125rem]">
-              At WorthPrime Tax, we turn financial complexity into confident decisions.
             </p>
           </div>
           {/* Phones: both buttons share one row across the full width. */}
@@ -211,13 +212,7 @@ function WhatComesNext() {
   return (
     <>
       <Section>
-        <div className="text-center">
-          <h2 className="font-serif text-[clamp(1.9rem,3vw,2.6rem)] leading-[1.1] font-bold tracking-[-0.01em] text-balance text-primary">
-            Your business deserves more than compliance. It deserves clarity.
-          </h2>
-        </div>
-
-        <div className="mt-12 grid items-center gap-10 lg:grid-cols-[1fr_1fr] lg:gap-12">
+        <div className="grid items-center gap-10 lg:grid-cols-[1fr_1fr] lg:gap-12">
           {/* A pale panel sits offset behind the photo's top-left corner. */}
           <Reveal className="relative pt-4 pl-4">
             <span
@@ -248,10 +243,15 @@ function WhatComesNext() {
       {/* Full-width closing band for this section. */}
       <section className="bg-linear-to-r from-hero to-brand-secondary text-hero-foreground">
         <Container className="flex flex-col gap-6 py-10 sm:py-12 lg:flex-row lg:items-center lg:justify-between">
-          <p className="font-serif text-[clamp(1.2rem,1.7vw,1.6rem)] leading-snug font-bold">
-            Talk to WorthPrime Tax today and discover a smarter way to manage your tax and
-            accounting requirements.
-          </p>
+          <div>
+            <h2 className="font-serif text-[clamp(1.6rem,2.6vw,2.4rem)] leading-[1.1] font-bold tracking-[-0.01em] text-balance text-hero-foreground">
+              Your business deserves more than compliance. It deserves clarity.
+            </h2>
+            <p className="mt-3 text-[clamp(1rem,1.3vw,1.2rem)] leading-snug text-hero-foreground/90">
+              Talk to WorthPrime Tax today and discover a smarter way to manage your tax and
+              accounting requirements.
+            </p>
+          </div>
           <Link
             to="/contact"
             hash="contact-form"
@@ -450,7 +450,7 @@ function ServicesGrid() {
 }
 
 function ClientExperience() {
-  const { label, heading, headingMuted, intro, tagline } = CLIENT_EXPERIENCE;
+  const { heading, subheading, intro, tagline } = CLIENT_EXPERIENCE;
   return (
     <section
       aria-labelledby="client-experience-heading"
@@ -465,13 +465,17 @@ function ClientExperience() {
         aria-hidden
       />
       <Container>
-        <SectionLabel>{label}</SectionLabel>
+        {/* Same heading size as "Why Businesses Choose WorthPrime Tax"; the subheading is one line
+            in one style, as the client asked. */}
         <h2
           id="client-experience-heading"
-          className="mt-4 text-[clamp(2.2rem,5vw,4rem)] leading-[1.02] tracking-[-0.02em]"
+          className="font-serif text-[clamp(2.3rem,4.6vw,3.8rem)] leading-[1.02] font-bold tracking-[-0.02em] text-balance text-primary"
         >
-          {heading} <span className="font-serif font-semibold">{headingMuted}</span>
+          {heading}
         </h2>
+        <p className="mt-4 font-serif text-[clamp(1.25rem,2vw,1.6rem)] leading-snug font-semibold text-primary">
+          {subheading}
+        </p>
         <p className="mt-6 max-w-3xl text-base leading-relaxed text-muted-foreground sm:text-[1.0625rem]">
           {intro}
         </p>
