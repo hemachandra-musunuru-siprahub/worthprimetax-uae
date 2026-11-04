@@ -1,6 +1,7 @@
 import type { ComponentType, ReactNode } from "react";
 import { Mail, MapPin, Phone } from "lucide-react";
-import { HOME_CONTACT, LINKS, OFFICES } from "@/data/site";
+import { useTranslation } from "react-i18next";
+import { LINKS, OFFICES } from "@/data/site";
 import { cn } from "@/lib/utils";
 import { WhatsAppIcon } from "./ContactCluster";
 import { EnquiryForm } from "./EnquiryForm";
@@ -17,6 +18,7 @@ export function ContactSection({
   asPageHeading?: boolean;
   compact?: boolean;
 }) {
+  const { t } = useTranslation();
   const Heading = asPageHeading ? "h1" : "h2";
   const value = compact ? "text-[0.95rem]" : "text-lg";
   return (
@@ -29,7 +31,7 @@ export function ContactSection({
         aria-hidden
       />
       <div
-        className="absolute top-1/4 left-[38%] -z-10 hidden size-[32rem] rounded-full bg-brand-secondary/10 blur-3xl lg:block"
+        className="absolute start-[38%] top-1/4 -z-10 hidden size-[32rem] rounded-full bg-brand-secondary/10 blur-3xl lg:block"
         aria-hidden
       />
       <div
@@ -41,7 +43,7 @@ export function ContactSection({
         )}
       >
         <div>
-          <p className="label-slash mb-3">{HOME_CONTACT.label}</p>
+          <p className="label-slash mb-3">{t("contact.label")}</p>
           <Heading
             className={cn(
               "font-serif leading-[1.04] font-bold tracking-[-0.02em] text-primary",
@@ -53,7 +55,7 @@ export function ContactSection({
                   : "text-[clamp(2.4rem,5vw,4.25rem)]",
             )}
           >
-            {HOME_CONTACT.heading} <span className="block">{HOME_CONTACT.headingAccent}</span>
+            {t("contact.heading")} <span className="block">{t("contact.headingAccent")}</span>
           </Heading>
           <p
             className={cn(
@@ -61,18 +63,23 @@ export function ContactSection({
               compact ? "mt-4 text-[0.95rem]" : "mt-5 text-base sm:text-lg",
             )}
           >
-            {HOME_CONTACT.intro}
+            {t("contact.intro")}
           </p>
 
           <ul className={compact ? "mt-6 space-y-4" : "mt-8 space-y-5"}>
-            <ContactLine icon={Phone} title="Call Us" compact={compact}>
-              <a href={LINKS.phoneHref} className={cn(value, "text-foreground hover:text-primary")}>
+            <ContactLine icon={Phone} title={t("contact.callUs")} compact={compact}>
+              <a
+                href={LINKS.phoneHref}
+                dir="ltr"
+                className={cn(value, "text-foreground hover:text-primary")}
+              >
                 {LINKS.phone}
               </a>
             </ContactLine>
-            <ContactLine icon={WhatsAppIcon} title="WhatsApp" compact={compact}>
+            <ContactLine icon={WhatsAppIcon} title={t("contact.whatsapp")} compact={compact}>
               <a
                 href={LINKS.whatsapp}
+                dir="ltr"
                 target="_blank"
                 rel="noreferrer noopener"
                 className={cn(value, "text-foreground hover:text-primary")}
@@ -82,23 +89,26 @@ export function ContactSection({
             </ContactLine>
             <ContactLine
               icon={Mail}
-              title="Drop Us an Email"
-              note={HOME_CONTACT.replyNote}
+              title={t("contact.emailUs")}
+              note={t("contact.replyNote")}
               compact={compact}
             >
               <a
                 href={`mailto:${LINKS.email}`}
+                dir="ltr"
                 className={cn(value, "break-all text-foreground hover:text-primary")}
               >
                 {LINKS.email}
               </a>
             </ContactLine>
-            <ContactLine icon={MapPin} title="Visit Us" compact={compact}>
-              <span className={cn(value, "text-foreground")}>{OFFICES[0].address}</span>
+            <ContactLine icon={MapPin} title={t("contact.visitUs")} compact={compact}>
+              <span className={cn(value, "text-foreground")} lang="en" dir="ltr">
+                {OFFICES[0]?.address}
+              </span>
             </ContactLine>
           </ul>
         </div>
-        <EnquiryForm headingLevel={asPageHeading ? 2 : 3} submitLabel="Submit Request" />
+        <EnquiryForm headingLevel={asPageHeading ? 2 : 3} submitLabel={t("contact.submit")} />
       </div>
     </Section>
   );

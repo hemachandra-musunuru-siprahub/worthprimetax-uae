@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { Service } from "@/data/services";
 import { cn } from "@/lib/utils";
 import { SERVICE_IMAGES } from "./serviceImages";
@@ -13,6 +14,7 @@ export function ServiceCard({
   service: Service;
   photoOnly?: boolean;
 }) {
+  const { t } = useTranslation();
   const [flipped, setFlipped] = useState(false);
   const image = SERVICE_IMAGES[service.slug];
 
@@ -25,7 +27,7 @@ export function ServiceCard({
       <div
         role="button"
         tabIndex={0}
-        aria-label={`${service.name}. Activate to see details.`}
+        aria-label={t("serviceCard.activate", { name: service.name })}
         aria-pressed={flipped}
         onClick={() => setFlipped((v) => !v)}
         onFocus={() => setFlipped(true)}
@@ -117,7 +119,8 @@ export function ServiceCard({
             params={{ slug: service.slug }}
             className="inline-flex items-center gap-1 text-sm font-medium text-hero-foreground hover:underline max-sm:text-xs"
           >
-            View Service <ArrowUpRight className="size-4" />
+            {t("serviceCard.viewService")}{" "}
+            <ArrowUpRight className="size-4 rtl:-scale-x-100" aria-hidden />
           </Link>
         </div>
       </div>

@@ -1,7 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { SERVICES } from "@/data/services";
+import { useTranslation } from "react-i18next";
+import type { Service } from "@/data/services";
+import { useServices } from "@/i18n/content";
 
-function ServiceItem({ service }: { service: (typeof SERVICES)[number] }) {
+function ServiceItem({ service }: { service: Service }) {
   return (
     <Link
       to="/services/$slug"
@@ -18,12 +20,17 @@ function ServiceItem({ service }: { service: (typeof SERVICES)[number] }) {
   );
 }
 
-/** Scrolling strip of every service, shown under each page hero. */
+/** Scrolling strip of every service, shown under each page hero. Scrolls the other way in RTL. */
 export function ServiceMarquee() {
+  const { t } = useTranslation();
+  const services = useServices();
   return (
-    <section aria-label="Our services" className="overflow-hidden border-y border-hero bg-hero">
+    <section
+      aria-label={t("marquee.label")}
+      className="overflow-hidden border-y border-hero bg-hero"
+    >
       <div className="marquee-track flex w-max hover:[animation-play-state:paused] focus-within:[animation-play-state:paused]">
-        {[...SERVICES, ...SERVICES].map((service, index) => (
+        {[...services, ...services].map((service, index) => (
           <ServiceItem key={`${service.slug}-${index}`} service={service} />
         ))}
       </div>

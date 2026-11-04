@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 /**
@@ -5,12 +6,13 @@ import { cn } from "@/lib/utils";
  * and a plant on a soft blue backdrop. Colours come from theme tokens only (navy, blue, tint).
  */
 export function FaqIllustration({ className }: { className?: string }) {
+  const { t } = useTranslation();
   return (
     <svg
       viewBox="0 0 420 300"
       className={cn("h-auto w-full", className)}
       role="img"
-      aria-label="Illustration of question and answer speech bubbles"
+      aria-label={t("home.faq.illustrationLabel")}
     >
       {/* Backdrop */}
       <ellipse cx="215" cy="170" rx="190" ry="118" className="fill-tint" />

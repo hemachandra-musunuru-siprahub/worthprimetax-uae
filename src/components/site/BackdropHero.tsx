@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { Crumb } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 import { Breadcrumbs } from "./Breadcrumbs";
@@ -10,7 +11,8 @@ export type HeroLine = Array<{ text: string; accent?: boolean; underline?: boole
 
 /** On phones each sentence of a heading part starts its own line; wider screens keep them inline. */
 function Sentences({ text }: { text: string }) {
-  const sentences = text.split(/(?<=\.)\s+/);
+  // Full stops, plus Latin and Arabic question and exclamation marks.
+  const sentences = text.split(/(?<=[.?!؟])\s+/);
   if (sentences.length < 2) return text;
   return sentences.map((s, i) => (
     <span key={s} className="max-sm:block">
@@ -21,8 +23,9 @@ function Sentences({ text }: { text: string }) {
 }
 
 /**
- * Hero on a full-width illustrated background: the artwork fills the right and its pale left side
- * carries the copy. Below lg the artwork stacks under the copy so it never sits behind the text.
+ * Hero on a full-width illustrated background: the artwork fills the end side (right, or left in
+ * Arabic) and the copy sits on the start side, with a fade between them. The artwork is not
+ * mirrored because it contains text. Below lg it stacks under the copy.
  */
 export function BackdropHero({
   lines,
@@ -41,6 +44,7 @@ export function BackdropHero({
   crumbs?: Crumb[];
   showCta?: boolean;
 }) {
+  const { t } = useTranslation();
   const paragraphs = typeof intro === "string" ? [intro] : intro;
   return (
     <section className="relative isolate overflow-hidden bg-background">
@@ -69,7 +73,7 @@ export function BackdropHero({
                         aria-hidden
                         viewBox="0 0 200 16"
                         preserveAspectRatio="none"
-                        className="absolute -bottom-[0.14em] left-[2%] h-[0.16em] w-full"
+                        className="absolute start-[2%] -bottom-[0.14em] h-[0.16em] w-full rtl:-scale-x-100"
                       >
                         <path
                           d="M2 13 Q 100 0 198 9"
@@ -106,7 +110,7 @@ export function BackdropHero({
           {showCta && (
             <div className="mt-6">
               {/* Services and service pages ask for a quote rather than a general contact. */}
-              <HeroCta label="Request a Quote" className="max-sm:px-10 max-sm:py-3" />
+              <HeroCta label={t("common.requestQuote")} className="max-sm:px-10 max-sm:py-3" />
             </div>
           )}
         </div>
@@ -128,13 +132,13 @@ export function BackdropHero({
       <div
         aria-hidden
         className={cn(
-          "absolute inset-y-0 left-0 -z-10 hidden bg-linear-to-r from-background/90 via-background/75 backdrop-blur-md max-sm:block",
+          "absolute inset-y-0 start-0 -z-10 hidden bg-linear-to-r from-background/90 via-background/75 backdrop-blur-md max-sm:block rtl:bg-linear-to-l",
           paragraphs.length === 1
-            ? "w-[78%] to-background/0 [mask-image:linear-gradient(to_right,black_55%,transparent)]"
-            : "w-full to-background/40 [mask-image:linear-gradient(to_right,black_85%,transparent)]",
+            ? "w-[78%] to-background/0 [mask-image:linear-gradient(to_right,black_55%,transparent)] rtl:[mask-image:linear-gradient(to_left,black_55%,transparent)]"
+            : "w-full to-background/40 [mask-image:linear-gradient(to_right,black_85%,transparent)] rtl:[mask-image:linear-gradient(to_left,black_85%,transparent)]",
         )}
       />
-      <div className="relative aspect-[5/2] w-full max-sm:hidden lg:absolute lg:inset-y-0 lg:right-0 lg:-z-10 lg:aspect-auto lg:w-[72%]">
+      <div className="relative aspect-[5/2] w-full max-sm:hidden lg:absolute lg:inset-y-0 lg:end-0 lg:-z-10 lg:aspect-auto lg:w-[72%]">
         <img
           src={image}
           alt=""
@@ -145,7 +149,7 @@ export function BackdropHero({
         />
         <div
           aria-hidden
-          className="absolute inset-y-0 left-0 hidden w-1/4 bg-linear-to-r from-background to-transparent lg:block"
+          className="absolute inset-y-0 start-0 hidden w-1/4 bg-linear-to-r from-background to-transparent lg:block rtl:w-2/5 rtl:bg-linear-to-l"
         />
       </div>
     </section>

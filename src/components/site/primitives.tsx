@@ -109,10 +109,24 @@ export function CountUp({
   );
 }
 
+const isRtl = (el: HTMLElement) => getComputedStyle(el).direction === "rtl";
+
+// How far the track has scrolled from its start edge. In RTL, scrollLeft runs from 0 to negative.
+const scrolledFromStart = (track: HTMLElement) => Math.abs(track.scrollLeft);
+
+/** An item's distance from the start edge of the track's scrollable content. */
+function offsetFromStart(track: HTMLElement, item: HTMLElement) {
+  const t = track.getBoundingClientRect();
+  const i = item.getBoundingClientRect();
+  const fromVisibleStart = isRtl(track) ? t.right - i.right : i.left - t.left;
+  return fromVisibleStart + scrolledFromStart(track);
+}
+
 /**
  * Active-slide state for a horizontal scroll-snap track. `goTo` scrolls the track only when it
  * overflows (on wide screens every slide is visible, so only the active state changes), and
- * swiping the track moves the active slide to whichever item is nearest its left edge.
+ * swiping the track moves the active slide to whichever item is nearest its start edge (left, or
+ * right in RTL).
  */
 export function useSnapCarousel(count: number) {
   const [active, setActive] = useState(0);
@@ -131,9 +145,9 @@ export function useSnapCarousel(count: number) {
       const item = itemRefs.current[next];
       if (track && item && track.scrollWidth > track.clientWidth) {
         const max = track.scrollWidth - track.clientWidth;
-        const left = Math.min(item.offsetLeft - track.offsetLeft, max);
-        scrollTarget.current = left;
-        track.scrollTo({ left, behavior: "smooth" });
+        const target = Math.min(offsetFromStart(track, item), max);
+        scrollTarget.current = target;
+        track.scrollTo({ left: isRtl(track) ? -target : target, behavior: "smooth" });
       }
     },
     [count],
@@ -149,15 +163,15 @@ export function useSnapCarousel(count: number) {
     const onScroll = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
-        const left = track.scrollLeft;
+        const scrolled = scrolledFromStart(track);
         if (scrollTarget.current !== null) {
-          if (Math.abs(left - scrollTarget.current) <= 2) release();
+          if (Math.abs(scrolled - scrollTarget.current) <= 2) release();
           return;
         }
         const max = track.scrollWidth - track.clientWidth;
         if (max <= 0) return;
-        // At the far end the last slides cannot reach the left edge; treat that as the last one.
-        if (left >= max - 2) {
+        // At the far end the last slides cannot reach the start edge; treat that as the last one.
+        if (scrolled >= max - 2) {
           setActive(itemRefs.current.length - 1);
           return;
         }
@@ -165,7 +179,7 @@ export function useSnapCarousel(count: number) {
         let nearestDist = Infinity;
         itemRefs.current.forEach((item, i) => {
           if (!item) return;
-          const dist = Math.abs(item.offsetLeft - track.offsetLeft - left);
+          const dist = Math.abs(offsetFromStart(track, item) - scrolled);
           if (dist < nearestDist) {
             nearest = i;
             nearestDist = dist;

@@ -54,7 +54,7 @@ function FaqItem({
           aria-controls={panelId}
           onClick={onToggle}
           onKeyDown={moveFocus}
-          className="flex w-full items-start gap-4 rounded-2xl px-4 py-3.5 text-left focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:px-5"
+          className="flex w-full items-start gap-4 rounded-2xl px-4 py-3.5 text-start focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:px-5"
         >
           <span className="min-w-0 flex-1 text-sm leading-snug font-semibold text-primary">
             {faq.q}

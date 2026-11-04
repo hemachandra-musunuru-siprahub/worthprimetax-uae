@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { seoHead } from "@/lib/seo";
+import { useTranslation } from "react-i18next";
+import { pageHead } from "@/lib/seo";
 import { Mail, MapPin, Phone } from "lucide-react";
-import { CONTACT_PAGE, LINKS, OFFICES } from "@/data/site";
+import { LINKS, OFFICES } from "@/data/site";
 import { Container } from "@/components/site/primitives";
 // import { CtaBand } from "@/components/site/CtaBand";
 import { ContactSection } from "@/components/site/ContactSection";
@@ -11,38 +12,38 @@ import { cn } from "@/lib/utils";
 
 const CHANNELS = [
   {
-    label: "Phone Number",
+    labelKey: "contact.phoneNumber",
     value: LINKS.phone,
     href: LINKS.phoneHref,
     Icon: Phone,
     external: false,
   },
   {
-    label: "Drop Us an Email",
+    labelKey: "contact.emailUs",
     value: LINKS.email,
     href: `mailto:${LINKS.email}`,
     Icon: Mail,
     external: false,
   },
   {
-    label: "WhatsApp",
+    labelKey: "contact.whatsapp",
     value: LINKS.phone,
     href: LINKS.whatsapp,
     Icon: WhatsAppIcon,
     external: true,
   },
-];
+] as const;
 
 // The contact page runs wider than the standard 1200px container, as in the approved layout.
 const WIDE = "max-w-[1540px] lg:px-10";
 
 export const Route = createFileRoute("/contact")({
-  head: () =>
-    seoHead({ title: CONTACT_PAGE.title, description: CONTACT_PAGE.description, path: "/contact" }),
+  head: ({ match }) => pageHead(match.context.lng, "contact", "/contact"),
   component: ContactPage,
 });
 
 function ContactPage() {
+  const { t } = useTranslation();
   return (
     <>
       {/* No ServiceMarquee here: the client asked for it to be removed from the contact page. */}
@@ -57,33 +58,35 @@ function ContactPage() {
                   id="contact-details"
                   className="font-serif text-[clamp(1.75rem,2.6vw,2.4rem)] leading-tight font-bold text-primary"
                 >
-                  {CONTACT_PAGE.detailsHeading}
+                  {t("contact.detailsHeading")}
                 </h2>
               </div>
               <p className="mt-1 text-base text-muted-foreground sm:text-lg">
-                {CONTACT_PAGE.detailsIntro}
+                {t("contact.detailsIntro")}
               </p>
             </div>
 
             <ul className="grid gap-3 sm:grid-flow-dense sm:grid-cols-2 lg:grid-cols-[repeat(3,auto)] xl:justify-end">
-              {CHANNELS.map(({ label, value, href, Icon, external }) => (
+              {CHANNELS.map(({ labelKey, value, href, Icon, external }) => (
                 <li
-                  key={label}
+                  key={labelKey}
                   // The long email address takes its own row on tablet, so Phone and WhatsApp pair up.
                   className={cn("min-w-0", Icon === Mail && "sm:col-span-2 lg:col-span-1")}
                 >
                   <a
                     href={href}
                     {...(external ? { target: "_blank", rel: "noreferrer noopener" } : {})}
-                    className="group flex h-full items-center gap-3.5 rounded-xl border border-border bg-card py-3 pr-5 pl-3 transition-[border-color,box-shadow] hover:border-primary/30 hover:shadow-[0_14px_30px_-22px] hover:shadow-primary/50"
+                    className="group flex h-full items-center gap-3.5 rounded-xl border border-border bg-card py-3 ps-3 pe-5 transition-[border-color,box-shadow] hover:border-primary/30 hover:shadow-[0_14px_30px_-22px] hover:shadow-primary/50"
                   >
                     <span className="grid shrink-0 place-items-center text-primary" aria-hidden>
                       <Icon className="size-6.5" strokeWidth={1.5} />
                     </span>
                     <span className="min-w-0">
-                      <span className="block text-[0.8125rem] text-muted-foreground">{label}</span>
+                      <span className="block text-[0.8125rem] text-muted-foreground">
+                        {t(labelKey)}
+                      </span>
                       <span className="block text-base font-semibold break-words text-primary group-hover:underline sm:text-[1.0625rem]">
-                        {value}
+                        <span dir="ltr">{value}</span>
                       </span>
                     </span>
                   </a>
@@ -103,11 +106,13 @@ function ContactPage() {
                 </span>
                 <address className="min-w-0 not-italic">
                   <span className="flex items-center gap-3 text-[0.95rem] font-semibold text-primary">
-                    {office.label}
+                    {t("contact.officeLabel")}
                     <OfficeFlag region={office.region} />
                   </span>
                   <span className="mt-1.5 block text-base leading-snug text-foreground sm:text-[1.0625rem]">
-                    {office.address}
+                    <span lang="en" dir="ltr">
+                      {office.address}
+                    </span>
                   </span>
                 </address>
               </li>
@@ -126,13 +131,14 @@ function ContactPage() {
  * so these are drawn as SVG; the fills are the flags' own colours, not theme tokens.
  */
 function OfficeFlag({ region }: { region: string }) {
+  const { t } = useTranslation();
   const flag = FLAGS[region];
   if (!flag) return null;
   return (
     <svg
       viewBox={flag.viewBox}
       role="img"
-      aria-label={`${region} flag`}
+      aria-label={t("contact.flagAlt", { region: t("contact.regionName") })}
       className="h-[1.1rem] w-auto shrink-0 rounded-[2px] shadow-[0_0_0_1px] shadow-border"
     >
       {flag.body}

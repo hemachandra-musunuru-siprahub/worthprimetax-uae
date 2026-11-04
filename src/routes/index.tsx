@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { seoHead } from "@/lib/seo";
+import { useTranslation } from "react-i18next";
+import { pageHead } from "@/lib/seo";
 import { useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import {
   ArrowRight,
@@ -9,9 +10,7 @@ import {
   Landmark,
   type LucideIcon,
 } from "lucide-react";
-import { SERVICES } from "@/data/services";
-import { FAQ_GROUPS } from "@/data/serviceFaqs";
-import { CLIENT_EXPERIENCE, REASONS } from "@/data/site";
+import { useFaqGroups, useReasons, useServices } from "@/i18n/content";
 import {
   Container,
   Reveal,
@@ -31,12 +30,8 @@ import heroMobileImage from "@/assets/home-hero-mobile.webp";
 import advisersImage from "@/assets/worthprime-advisers-blue.webp";
 import workspaceImage from "@/assets/worthprime-workspace.webp";
 
-const TITLE = "WorthPrime Tax | Tax, Accounting & Compliance in Dubai, UAE";
-const DESCRIPTION =
-  "Since 2018, WorthPrime Tax has supported businesses, entrepreneurs and individuals across Dubai and the UAE with Tax, Accounting, Audit, PRO / Visa and U.S. Expat Tax Services.";
-
 export const Route = createFileRoute("/")({
-  head: () => seoHead({ title: TITLE, description: DESCRIPTION, path: "/" }),
+  head: ({ match }) => pageHead(match.context.lng, "home", "/"),
   component: Index,
 });
 
@@ -63,6 +58,7 @@ function Index() {
 }
 
 function Hero() {
+  const { t } = useTranslation();
   // The intro shows its first half until the visitor asks for the rest.
   const [introOpen, setIntroOpen] = useState(false);
   // While the intro is open the photo keeps the hero's collapsed height, so the extra text makes
@@ -81,7 +77,7 @@ function Hero() {
       onClick={toggleIntro}
       className="font-semibold whitespace-nowrap text-primary underline underline-offset-2 hover:no-underline"
     >
-      {introOpen ? "Read less" : "Read more"}
+      {introOpen ? t("common.readLess") : t("common.readMore")}
     </button>
   );
   return (
@@ -104,7 +100,7 @@ function Hero() {
         width={502}
         height={812}
         fetchPriority="high"
-        className="absolute top-[4.5rem] right-0 -z-10 hidden h-auto w-[58.1%] [mask-composite:intersect] [mask-image:radial-gradient(ellipse_100%_70%_at_100%_50%,black_85%,transparent),linear-gradient(to_bottom,transparent,black_16%,black_58%,transparent_84%)] max-sm:block"
+        className="absolute end-0 top-[4.5rem] -z-10 hidden h-auto w-[58.1%] [mask-composite:intersect] [mask-image:radial-gradient(ellipse_100%_70%_at_100%_50%,black_85%,transparent),linear-gradient(to_bottom,transparent,black_16%,black_58%,transparent_84%)] max-sm:block rtl:-scale-x-100"
       />
       <div
         className={cn(
@@ -117,17 +113,17 @@ function Hero() {
       >
         <img
           src={heroImage}
-          alt="Tax advisers reviewing financial documents together"
+          alt={t("home.heroImageAlt")}
           width={1531}
           height={1027}
           fetchPriority="high"
-          className="h-full w-full object-cover object-[68%_center]"
+          className="h-full w-full object-cover object-[68%_center] rtl:-scale-x-100"
         />
         {/* A left-side fade behind the copy (no flat white wash over the whole photo), so the text
             stays readable while the advisers stay clear on the right. Tablets, where the copy runs
             further across the photo, get a stronger fade. */}
         <div
-          className="absolute inset-0 bg-linear-to-r from-background/85 from-20% via-background/60 via-42% to-transparent to-62% max-lg:from-background/92 max-lg:from-40% max-lg:via-background/75 max-lg:via-65% max-lg:to-95% lg:portrait:from-background/92 lg:portrait:from-40% lg:portrait:via-background/75 lg:portrait:via-65% lg:portrait:to-95%"
+          className="absolute inset-0 bg-linear-to-r rtl:bg-linear-to-l from-background/85 from-20% via-background/60 via-42% to-transparent to-62% max-lg:from-background/92 max-lg:from-40% max-lg:via-background/75 max-lg:via-65% max-lg:to-95% lg:portrait:from-background/92 lg:portrait:from-40% lg:portrait:via-background/75 lg:portrait:via-65% lg:portrait:to-95%"
           aria-hidden
         />
       </div>
@@ -138,12 +134,12 @@ function Hero() {
           <h1 className="font-serif text-[clamp(2rem,3.4vw,3.5rem)] leading-[1.12] font-bold tracking-[-0.02em] text-primary max-sm:text-[1.75rem] max-sm:leading-[1.1]">
             {/* One sentence a line from tablet up; phones break the longer two again so they stay
                 beside the photo. */}
-            <span className="block">One partner.</span>{" "}
+            <span className="block">{t("home.hero.line1")}</span>{" "}
             <span className="block sm:whitespace-nowrap">
-              <span className="max-sm:block">Multiple</span> financial needs.
+              <span className="max-sm:block">{t("home.hero.line2a")}</span> {t("home.hero.line2b")}
             </span>{" "}
             <span className="block sm:whitespace-nowrap">
-              <span className="max-sm:block">Connected</span> solutions.
+              <span className="max-sm:block">{t("home.hero.line3a")}</span> {t("home.hero.line3b")}
             </span>
           </h1>
           <div className="mt-2 max-w-[37rem] text-base leading-relaxed text-foreground/85 max-sm:mt-3 max-sm:text-xs max-sm:leading-[1.5] sm:text-[0.9375rem] sm:max-w-[30rem] lg:landscape:max-w-[min(42rem,37vw)] xl:text-[clamp(0.875rem,1.6svh,0.9375rem)]">
@@ -155,23 +151,16 @@ function Hero() {
                   270px down. */}
               <span
                 aria-hidden
-                className="float-right hidden h-[calc(79vw-11.625rem)] w-[calc(100%-10.5rem)] max-sm:block"
+                className="float-end hidden h-[calc(79vw-11.625rem)] w-[calc(100%-10.5rem)] max-sm:block"
               />
-              Business does not stand still. Neither do its responsibilities. Tax regulations
-              evolve. Businesses grow. New opportunities emerge. And with every stage of that
-              journey comes a new set of financial and compliance considerations.
+              {t("home.hero.intro")}
               {/* Opened, the rest starts on its own line after a small gap (half a line), and "Read less"
                   follows it. */}
               {introOpen ? (
                 <span id="hero-intro-more" className="mt-[0.5lh] block">
-                  Since 2018, we have been supporting businesses, entrepreneurs and individuals
-                  across Dubai and the UAE with comprehensive, practical and reliable solutions
-                  across Tax, Accounting, Audit, PRO / Visa and U.S. Expat Tax Services.
+                  {t("home.hero.more1")}
                   <span className="mt-[0.5lh] block">
-                    From UAE Corporate Tax and VAT to U.S. tax filing, bookkeeping, payroll, company
-                    formation and IRS compliance, we bring the right expertise together under one
-                    trusted relationship—helping you keep your affairs in order, compliant and
-                    well-positioned for what comes next. {introToggle}
+                    {t("home.hero.more2")} {introToggle}
                   </span>
                 </span>
               ) : (
@@ -179,7 +168,7 @@ function Hero() {
               )}
             </p>
             <p className="mt-3 font-semibold text-primary max-sm:mt-2 max-sm:text-[0.8125rem]">
-              At WorthPrime Tax, we turn financial complexity into confident decisions.
+              {t("home.hero.highlight")}
             </p>
           </div>
           {/* Phones: both buttons share one row across the full width. */}
@@ -190,15 +179,16 @@ function Hero() {
             >
               <span>
                 {/* "Explore" is dropped on the narrowest phones so both buttons still fit in one row. */}
-                <span className="hidden min-[360px]:max-sm:inline">Explore </span>Our Services
+                <span className="hidden min-[360px]:max-sm:inline">{t("common.explore")} </span>
+                {t("common.ourServices")}
               </span>
-              <ArrowRight className="size-4" aria-hidden />
+              <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden />
             </Link>
             <Link
               to="/contact"
               className="inline-flex items-center gap-2 rounded-md border border-primary bg-background/70 px-5 py-2 text-[0.8125rem] font-semibold text-primary transition-transform hover:scale-[1.03] max-sm:flex-auto max-sm:justify-center max-sm:bg-background max-sm:px-3 max-sm:py-3 max-sm:text-[0.8125rem] max-sm:whitespace-nowrap"
             >
-              Book a Consultation
+              {t("common.bookConsultation")}
             </Link>
           </div>
         </div>
@@ -208,25 +198,26 @@ function Hero() {
 }
 
 function WhatComesNext() {
+  const { t } = useTranslation();
   return (
     <>
       <Section>
         <div className="text-center">
           <h2 className="font-serif text-[clamp(1.9rem,3vw,2.6rem)] leading-[1.1] font-bold tracking-[-0.01em] text-balance text-primary">
-            Your business deserves more than compliance. It deserves clarity.
+            {t("home.whatNext.heading")}
           </h2>
         </div>
 
         <div className="mt-12 grid items-center gap-10 lg:grid-cols-[1fr_1fr] lg:gap-12">
           {/* A pale panel sits offset behind the photo's top-left corner. */}
-          <Reveal className="relative pt-4 pl-4">
+          <Reveal className="relative ps-4 pt-4">
             <span
               aria-hidden
-              className="absolute top-0 left-0 h-[85%] w-[90%] rounded-2xl bg-tint"
+              className="absolute start-0 top-0 h-[85%] w-[90%] rounded-2xl bg-tint"
             />
             <img
               src={advisersImage}
-              alt="Two WorthPrime Tax advisers reviewing financial documents together"
+              alt={t("home.whatNext.imageAlt")}
               width={1200}
               height={896}
               loading="lazy"
@@ -234,13 +225,8 @@ function WhatComesNext() {
             />
           </Reveal>
           <Reveal delay={100} className="space-y-5 text-lg leading-relaxed text-muted-foreground">
-            <p>
-              WorthPrime equips businesses to launch new companies, manage established operations,
-              expand their reach and stay ahead of UAE and U.S. tax obligations.
-            </p>
-            <p className="font-semibold text-primary">
-              Our role is to navigate the intricacies while leaving room for bigger priorities.
-            </p>
+            <p>{t("home.whatNext.body")}</p>
+            <p className="font-semibold text-primary">{t("home.whatNext.role")}</p>
           </Reveal>
         </div>
       </Section>
@@ -249,15 +235,14 @@ function WhatComesNext() {
       <section className="bg-linear-to-r from-hero to-brand-secondary text-hero-foreground">
         <Container className="flex flex-col gap-6 py-10 sm:py-12 lg:flex-row lg:items-center lg:justify-between">
           <p className="font-serif text-[clamp(1.2rem,1.7vw,1.6rem)] leading-snug font-bold">
-            Talk to WorthPrime Tax today and discover a smarter way to manage your tax and
-            accounting requirements.
+            {t("home.whatNext.band")}
           </p>
           <Link
             to="/contact"
             hash="contact-form"
             className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-lg bg-hero-foreground px-7 py-4 font-semibold text-primary transition-transform hover:scale-[1.03] lg:self-auto"
           >
-            Talk to WorthPrime Tax <ArrowRight className="size-4" aria-hidden />
+            {t("common.talkToUs")} <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden />
           </Link>
         </Container>
       </section>
@@ -285,7 +270,11 @@ function resetTilt(e: PointerEvent<HTMLDivElement>) {
 }
 
 function ProofSection() {
-  const total = REASONS.length;
+  const { t, i18n } = useTranslation();
+  const reasons = useReasons();
+  const total = reasons.length;
+  // Grid columns mirror in RTL but translateX does not, so the deck offsets flip sign.
+  const flip = i18n.dir() === "rtl" ? -1 : 1;
   // On narrow screens the cards become a swipeable track; on desktop tapping a card highlights it.
   const { active, setActive, trackRef, itemRefs: cardRefs } = useSnapCarousel(total);
   // Not `once`: the cards fan out as they come into view, gather back into a deck while still on
@@ -317,31 +306,25 @@ function ProofSection() {
               id="why-worthprime-heading"
               className="font-serif text-[clamp(2.3rem,4.6vw,3.8rem)] leading-[1.02] font-bold tracking-[-0.02em] text-balance text-primary"
             >
-              Why Businesses Choose WorthPrime Tax
+              {t("home.why.heading")}
             </h2>
             <p className="mt-4 font-serif text-[clamp(1.25rem,2vw,1.6rem)] leading-snug font-semibold text-primary">
-              One Trusted Partner. A Wider Perspective. Everything At One Place.
+              {t("home.why.subheading")}
             </p>
             <p className="mt-6 max-w-[38rem] text-base leading-relaxed text-muted-foreground sm:text-[1.0625rem]">
-              Business rarely operates in neat compartments. Tax influences accounting. Payroll
-              intersects with compliance. Audits depend on accurate records. Government formalities
-              can affect how quickly a business moves. Managing each requirement through separate
-              providers can create unnecessary layers, fragmented communication and avoidable
-              administrative effort.
+              {t("home.why.p1")}
             </p>
             <p className="mt-4 max-w-[38rem] text-base leading-relaxed text-muted-foreground sm:text-[1.0625rem]">
-              WorthPrime Tax brings these essential functions into one seamless continuum of
-              support, creating a more connected approach to Tax, Accounting, Bookkeeping, Payroll,
-              Audit, PRO / Visa and business compliance. The result is a relationship built around
-              continuity, clarity and a deeper understanding of the business behind the numbers.
+              {t("home.why.p2")}
             </p>
           </div>
 
           <Reveal className="min-w-0">
             <div className="relative overflow-hidden rounded-2xl border border-brand-secondary/20 bg-card shadow-[0_24px_60px_-28px] shadow-primary/35">
+              {/* Decorative: the section copy beside it carries the message. */}
               <img
                 src={workspaceImage}
-                alt="WorthPrime Tax services — tax, accounting, payroll, audit, business formation, compliance and financial planning — connected around a financial dashboard"
+                alt=""
                 width={1672}
                 height={941}
                 loading="lazy"
@@ -359,19 +342,19 @@ function ProofSection() {
           <div
             ref={trackRef}
             role="region"
-            aria-roledescription="carousel"
-            aria-label="Why clients choose WorthPrime Tax"
+            aria-roledescription={t("common.carousel")}
+            aria-label={t("home.why.carouselLabel")}
             className="-mx-5 mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-5 px-5 pt-1 pb-4 perspective-[1200px] [scrollbar-width:none] sm:mx-0 sm:mt-14 sm:grid sm:auto-rows-fr sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 lg:grid-cols-5 [&::-webkit-scrollbar]:hidden"
           >
-            {REASONS.map((r, i) => {
+            {reasons.map((r, i) => {
               const isActive = active === i;
               // The cards start as a deck in the middle of their row, last card on top and the
               // ones behind peeking out to its left, then fan out into their own columns.
               const lgDepth = total - 1 - i;
               const smDepth = 1 - (i % 2);
               const deck = {
-                "--deck-lg": `calc(${(total - 1) / 2 - i} * (100% + 1.25rem) - ${lgDepth * 0.875}rem)`,
-                "--deck-sm": `calc(${0.5 - (i % 2)} * (100% + 1.25rem) - ${smDepth * 0.875}rem)`,
+                "--deck-lg": `calc(${flip} * (${(total - 1) / 2 - i} * (100% + 1.25rem) - ${lgDepth * 0.875}rem))`,
+                "--deck-sm": `calc(${flip} * (${0.5 - (i % 2)} * (100% + 1.25rem) - ${smDepth * 0.875}rem))`,
               } as CSSProperties;
               return (
                 <article
@@ -379,8 +362,8 @@ function ProofSection() {
                   ref={(n) => {
                     cardRefs.current[i] = n;
                   }}
-                  aria-roledescription="slide"
-                  aria-label={`${i + 1} of ${total}`}
+                  aria-roledescription={t("common.slide")}
+                  aria-label={t("common.slideOf", { current: i + 1, total })}
                   aria-current={isActive ? "true" : undefined}
                   onClick={() => setActive(i)}
                   style={{ ...deck, zIndex: i }}
@@ -419,14 +402,13 @@ function ProofSection() {
 
         <div className="mt-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:justify-between">
           <p className="max-w-2xl font-serif text-[clamp(1.2rem,1.7vw,1.5rem)] leading-snug font-semibold text-primary">
-            More than a service provider. A partner built around the way business works.
+            {t("home.why.closing")}
           </p>
           <Link
             to="/services"
             className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-transform hover:scale-[1.03]"
           >
-            Discover What WorthPrime Can Do for Your Business{" "}
-            <ArrowRight className="size-4" aria-hidden />
+            {t("home.why.cta")} <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden />
           </Link>
         </div>
       </Container>
@@ -435,11 +417,15 @@ function ProofSection() {
 }
 
 function ServicesGrid() {
+  const { t } = useTranslation();
+  const services = useServices();
   return (
     <Section id="services">
-      <h2 className="text-[clamp(2rem,4.4vw,3.4rem)] leading-[1.05] text-primary">Our Services</h2>
+      <h2 className="text-[clamp(2rem,4.4vw,3.4rem)] leading-[1.05] text-primary">
+        {t("common.ourServices")}
+      </h2>
       <div className={cn("mt-8", SERVICE_GRID)}>
-        {SERVICES.map((s, i) => (
+        {services.map((s, i) => (
           <Reveal key={s.slug} delay={(i % 5) * 80}>
             <ServiceCard service={s} />
           </Reveal>
@@ -450,7 +436,7 @@ function ServicesGrid() {
 }
 
 function ClientExperience() {
-  const { label, heading, headingMuted, intro, tagline } = CLIENT_EXPERIENCE;
+  const { t } = useTranslation();
   return (
     <section
       aria-labelledby="client-experience-heading"
@@ -461,21 +447,22 @@ function ClientExperience() {
         aria-hidden
       />
       <div
-        className="absolute top-16 right-6 -z-10 hidden h-28 w-40 [background-image:radial-gradient(var(--theme-border)_1.5px,transparent_1.5px)] [background-size:18px_18px] md:block"
+        className="absolute end-6 top-16 -z-10 hidden h-28 w-40 [background-image:radial-gradient(var(--theme-border)_1.5px,transparent_1.5px)] [background-size:18px_18px] md:block"
         aria-hidden
       />
       <Container>
-        <SectionLabel>{label}</SectionLabel>
+        <SectionLabel>{t("clients.label")}</SectionLabel>
         <h2
           id="client-experience-heading"
           className="mt-4 text-[clamp(2.2rem,5vw,4rem)] leading-[1.02] tracking-[-0.02em]"
         >
-          {heading} <span className="font-serif font-semibold">{headingMuted}</span>
+          {t("clients.heading")}{" "}
+          <span className="font-serif font-semibold">{t("clients.headingMuted")}</span>
         </h2>
         <p className="mt-6 max-w-3xl text-base leading-relaxed text-muted-foreground sm:text-[1.0625rem]">
-          {intro}
+          {t("clients.intro")}
         </p>
-        <p className="mt-4 font-semibold text-primary">{tagline}</p>
+        <p className="mt-4 font-semibold text-primary">{t("clients.tagline")}</p>
       </Container>
     </section>
   );
@@ -485,6 +472,8 @@ function ClientExperience() {
 const FAQ_GROUP_ICONS: LucideIcon[] = [Building2, Landmark, Calculator];
 
 function Faq() {
+  const { t } = useTranslation();
+  const faqGroups = useFaqGroups();
   // The first question starts open. Keys are "group-question" indexes.
   const [open, setOpen] = useState<string | null>("0-0");
   return (
@@ -496,20 +485,21 @@ function Faq() {
       <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-12">
         <div className="lg:sticky lg:top-24">
           <h2 className="font-serif text-[clamp(2rem,3.6vw,3.1rem)] leading-[1.04] font-bold tracking-[-0.02em] text-primary">
-            Frequently Asked <span className="block text-brand-secondary">Questions</span>
+            {t("home.faq.heading")}{" "}
+            <span className="block text-brand-secondary">{t("home.faq.headingAccent")}</span>
           </h2>
           <Link
             to="/"
             hash="contact-form"
             className="mt-5 inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-[0_14px_30px_-18px] shadow-primary/70 transition-transform hover:scale-[1.03]"
           >
-            Contact Us <ArrowRight className="size-4" aria-hidden />
+            {t("common.contactUs")} <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden />
           </Link>
           <FaqIllustration className="mt-5 hidden max-w-[14rem] lg:block" />
         </div>
 
         <div className="space-y-8">
-          {FAQ_GROUPS.map((group, g) => {
+          {faqGroups.map((group, g) => {
             const Icon = FAQ_GROUP_ICONS[g] ?? Landmark;
             return (
               <div key={group.title}>
@@ -538,7 +528,7 @@ function Faq() {
                             aria-expanded={isOpen}
                             aria-controls={panelId}
                             onClick={() => setOpen(isOpen ? null : key)}
-                            className="flex w-full items-center gap-3 px-4 py-3 text-left sm:gap-4 sm:px-5 sm:py-3.5"
+                            className="flex w-full items-center gap-3 px-4 py-3 text-start sm:gap-4 sm:px-5 sm:py-3.5"
                           >
                             <span className="min-w-0 flex-1 text-sm font-semibold text-primary sm:text-base">
                               {f.q}
