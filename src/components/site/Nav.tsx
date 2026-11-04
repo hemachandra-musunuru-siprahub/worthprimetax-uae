@@ -1,7 +1,9 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { ChevronDown, ChevronRight, ExternalLink, Menu, X } from "lucide-react";
-import { SERVICES } from "@/data/services";
+import { useTranslation } from "react-i18next";
+import { useServices } from "@/i18n/content";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { LINKS } from "@/data/site";
 import { cn } from "@/lib/utils";
 import logoImage from "@/assets/worthprime-logo-2026.webp";
@@ -16,11 +18,13 @@ const navLink =
 
 // External links, in menu order after Services; both open in a new tab.
 const EXTERNAL_ITEMS = [
-  { label: "UAE Tax Payment", href: LINKS.uaeTaxPayment },
-  { label: "IRS Refund Status", href: LINKS.irs },
-];
+  { labelKey: "common.uaeTaxPayment", href: LINKS.uaeTaxPayment },
+  { labelKey: "common.irsRefundStatus", href: LINKS.irs },
+] as const;
 
 export function Nav() {
+  const { t } = useTranslation();
+  const services = useServices();
   const [open, setOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
@@ -65,11 +69,15 @@ export function Nav() {
           className={cn(
             "pointer-events-auto mx-auto flex w-full items-center gap-2 px-1 transition-[min-height] duration-300 sm:px-2",
             NAV_WIDTH,
-            "sm:pr-4",
+            "sm:pe-4",
             scrolled ? "min-h-14" : "min-h-16",
           )}
         >
-          <Link to="/" className="flex shrink-0 items-center pr-3" aria-label="WorthPrime Tax home">
+          <Link
+            to="/"
+            className="flex shrink-0 items-center pe-3"
+            aria-label={t("common.homeAria")}
+          >
             {/* Logo mark with the tagline as live text underneath (not part of the image). */}
             <span
               className={cn(
@@ -79,7 +87,7 @@ export function Nav() {
             >
               <img
                 src={logoImage}
-                alt="WorthPrime Tax"
+                alt={t("common.brand")}
                 width={600}
                 height={383}
                 className={cn(
@@ -94,17 +102,17 @@ export function Nav() {
                   overlay ? "text-hero-foreground" : "text-primary",
                 )}
               >
-                Your Compliance Partner!
+                {t("common.tagline")}
               </span>
             </span>
           </Link>
 
           <div className="hidden flex-1 items-center gap-1 lg:flex">
             <Link to="/" activeOptions={{ exact: true }} className={cn(navLink, linkColor)}>
-              Home
+              {t("common.home")}
             </Link>
             <Link to="/about" className={cn(navLink, linkColor)}>
-              About Us
+              {t("common.aboutUs")}
             </Link>
             <div
               className="relative"
@@ -112,24 +120,24 @@ export function Nav() {
               onMouseLeave={() => setServicesOpen(false)}
             >
               <Link to="/services" className={cn(navLink, linkColor, "flex items-center gap-1")}>
-                Services
+                {t("common.services")}
                 <ChevronDown className="size-3.5" />
               </Link>
               <div
                 className={cn(
-                  "absolute left-0 top-full w-[420px] pt-3 transition-all",
+                  "absolute start-0 top-full w-[420px] pt-3 transition-all",
                   servicesOpen ? "visible opacity-100" : "invisible -translate-y-1 opacity-0",
                 )}
               >
                 <div className="grid grid-cols-2 gap-1 rounded-lg border border-nav-border bg-nav-menu p-2 shadow-xl">
-                  {SERVICES.map((s) => (
+                  {services.map((s) => (
                     <Link
                       key={s.slug}
                       to="/services/$slug"
                       params={{ slug: s.slug }}
                       className="rounded-md px-3 py-2 text-xs leading-snug text-foreground/75 transition-colors hover:bg-accent hover:text-foreground"
                     >
-                      <span className="mr-1.5 text-primary">{s.number}</span>
+                      <span className="me-1.5 text-primary">{s.number}</span>
                       {s.name}
                     </Link>
                   ))}
@@ -138,7 +146,7 @@ export function Nav() {
             </div>
             {EXTERNAL_ITEMS.map((item) => (
               <a
-                key={item.label}
+                key={item.href}
                 href={item.href}
                 target="_blank"
                 rel="noreferrer noopener"
@@ -149,18 +157,19 @@ export function Nav() {
                     : "text-muted-foreground hover:text-nav-link-hover",
                 )}
               >
-                {item.label}
+                {t(item.labelKey)}
               </a>
             ))}
             <Link to="/contact" className={cn(navLink, linkColor)}>
-              Contact Us
+              {t("common.contactUs")}
             </Link>
           </div>
 
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ms-auto flex items-center gap-2">
+            <LanguageSwitcher compact overlay={overlay} className="max-sm:hidden" />
             <button
               type="button"
-              aria-label={open ? "Close menu" : "Open menu"}
+              aria-label={open ? t("nav.closeMenu") : t("nav.openMenu")}
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
               className={cn(
@@ -174,7 +183,7 @@ export function Nav() {
         </nav>
       </header>
 
-      {/* Side drawer that slides in from the right over a dimmed page. It sits outside the header
+      {/* Side drawer that slides in from the end side (right, or left in Arabic) over a dimmed page. It sits outside the header
           because the header's backdrop-blur would otherwise become the containing block for
           `fixed`. `inert` keeps the closed drawer out of the tab order. */}
       <div
@@ -188,34 +197,34 @@ export function Nav() {
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="Site menu"
+        aria-label={t("nav.siteMenu")}
         inert={!open}
         className={cn(
-          "fixed inset-y-0 right-0 z-[70] flex w-[85%] max-w-sm flex-col overflow-y-auto bg-nav-menu shadow-2xl transition-transform duration-300 ease-out lg:hidden",
-          open ? "translate-x-0" : "translate-x-full",
+          "fixed inset-y-0 end-0 z-[70] flex w-[85%] max-w-sm flex-col overflow-y-auto bg-nav-menu shadow-2xl transition-transform duration-300 ease-out lg:hidden",
+          open ? "translate-x-0" : "ltr:translate-x-full rtl:-translate-x-full",
         )}
       >
-        <div className="flex min-h-16 items-center justify-between border-b border-nav-border pr-4 pl-4">
+        <div className="flex min-h-16 items-center justify-between border-b border-nav-border px-4">
           <Link
             to="/"
             onClick={() => setOpen(false)}
-            aria-label="WorthPrime Tax home"
+            aria-label={t("common.homeAria")}
             className="flex flex-col items-center"
           >
             <img
               src={logoImage}
-              alt="WorthPrime Tax"
+              alt={t("common.brand")}
               width={600}
               height={383}
               className="h-11 w-auto object-contain"
             />
             <span className="mt-1 text-[0.4375rem] leading-none font-bold whitespace-nowrap text-primary">
-              Your Compliance Partner!
+              {t("common.tagline")}
             </span>
           </Link>
           <button
             type="button"
-            aria-label="Close menu"
+            aria-label={t("nav.closeMenu")}
             onClick={() => setOpen(false)}
             className="grid size-9 place-items-center rounded-full border border-nav-border"
           >
@@ -224,22 +233,22 @@ export function Nav() {
         </div>
         <ul className="flex flex-col">
           <MobileNavRow to="/" onNavigate={() => setOpen(false)}>
-            Home
+            {t("common.home")}
           </MobileNavRow>
           <MobileNavRow to="/about" onNavigate={() => setOpen(false)}>
-            About Us
+            {t("common.aboutUs")}
           </MobileNavRow>
           <li className="border-b border-nav-border">
             <div className="flex items-stretch">
               <Link to="/services" onClick={() => setOpen(false)} className={mobileRow}>
-                Services
+                {t("common.services")}
               </Link>
               <button
                 type="button"
-                aria-label={mobileServicesOpen ? "Hide services" : "Show services"}
+                aria-label={mobileServicesOpen ? t("nav.hideServices") : t("nav.showServices")}
                 aria-expanded={mobileServicesOpen}
                 onClick={() => setMobileServicesOpen((v) => !v)}
-                className="grid w-14 shrink-0 place-items-center border-l border-nav-border text-nav-link"
+                className="grid w-14 shrink-0 place-items-center border-s border-nav-border text-nav-link"
               >
                 <ChevronDown
                   className={cn("size-5 transition-transform", mobileServicesOpen && "rotate-180")}
@@ -248,7 +257,7 @@ export function Nav() {
             </div>
             {mobileServicesOpen && (
               <ul className="bg-tint/60 py-1">
-                {SERVICES.map((s) => (
+                {services.map((s) => (
                   <li key={s.slug}>
                     <Link
                       to="/services/$slug"
@@ -264,17 +273,21 @@ export function Nav() {
             )}
           </li>
           {EXTERNAL_ITEMS.map((item) => (
-            <li key={item.label} className="border-b border-nav-border">
+            <li key={item.href} className="border-b border-nav-border">
               <a href={item.href} target="_blank" rel="noreferrer noopener" className={mobileRow}>
-                {item.label}
+                {t(item.labelKey)}
                 <ExternalLink className="size-4 text-muted-foreground" aria-hidden />
               </a>
             </li>
           ))}
           <MobileNavRow to="/contact" onNavigate={() => setOpen(false)}>
-            Contact Us
+            {t("common.contactUs")}
           </MobileNavRow>
         </ul>
+
+        <div className="mt-auto p-6">
+          <LanguageSwitcher className="flex w-full" />
+        </div>
       </div>
     </>
   );
@@ -302,7 +315,7 @@ function MobileNavRow({
         className={mobileRow}
       >
         {children}
-        <ChevronRight className="size-4 text-muted-foreground" aria-hidden />
+        <ChevronRight className="size-4 text-muted-foreground rtl:-scale-x-100" aria-hidden />
       </Link>
     </li>
   );

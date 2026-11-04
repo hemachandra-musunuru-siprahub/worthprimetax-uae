@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 /**
@@ -10,7 +11,7 @@ import { cn } from "@/lib/utils";
 export function HeroCta({
   toHome = false,
   onDark = false,
-  label = "Contact Us",
+  label,
   className,
 }: {
   toHome?: boolean;
@@ -18,6 +19,7 @@ export function HeroCta({
   label?: string;
   className?: string;
 }) {
+  const { t } = useTranslation();
   return (
     <Link
       to={toHome ? "/" : "/contact"}
@@ -28,7 +30,8 @@ export function HeroCta({
         className,
       )}
     >
-      {label} <ArrowRight className="size-4" aria-hidden />
+      {label ?? t("common.contactUs")}{" "}
+      <ArrowRight className="size-4 rtl:-scale-x-100" aria-hidden />
     </Link>
   );
 }

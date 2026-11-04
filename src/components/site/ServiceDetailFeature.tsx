@@ -1,5 +1,6 @@
 import type { Service } from "@/data/services";
-import { getServiceFaqs } from "@/data/serviceFaqs";
+import { useTranslation } from "react-i18next";
+import { useServiceFaqs } from "@/i18n/content";
 import { Container } from "./primitives";
 import { BackdropHero } from "./BackdropHero";
 import { CapabilityShowcase } from "./CapabilityShowcase";
@@ -18,7 +19,8 @@ export function ServiceDetailFeature({
   service: Service;
   media: ServiceDetailMedia;
 }) {
-  const faqs = getServiceFaqs(service.slug);
+  const { t } = useTranslation();
+  const faqs = useServiceFaqs(service.slug);
 
   return (
     <>
@@ -42,7 +44,7 @@ export function ServiceDetailFeature({
               id="faqs-heading"
               className="font-serif text-[clamp(1.7rem,3vw,2.4rem)] leading-[1.15] font-bold text-primary"
             >
-              Frequently Asked Questions
+              {t("serviceDetail.faqHeading")}
             </h2>
             <ServiceFaqs groups={faqs} />
           </Container>

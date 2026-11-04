@@ -12,7 +12,8 @@ import {
   Youtube,
   type LucideIcon,
 } from "lucide-react";
-import { SERVICES } from "@/data/services";
+import { useTranslation } from "react-i18next";
+import { useServices } from "@/i18n/content";
 import { HAS_LINKEDIN, LINKS, OFFICES } from "@/data/site";
 import { Container } from "./primitives";
 import { WhatsAppIcon } from "./ContactCluster";
@@ -69,21 +70,23 @@ function ContactLink({
 }
 
 export function Footer() {
+  const { t } = useTranslation();
+  const services = useServices();
   return (
     <footer id="contact" className="border-t border-border bg-footer">
       {/* Extra right padding below lg keeps text clear of the fixed contact buttons. */}
-      <Container className="pr-20 sm:pr-20 lg:pr-8">
+      <Container className="pe-20 sm:pe-20 lg:pe-8">
         {/* max-sm: classes shorten the footer on phones only; sm and up are unchanged. */}
         <div className="grid gap-10 pt-12 pb-8 max-sm:gap-8 max-sm:pt-10 md:grid-cols-2 lg:grid-cols-[1.2fr_1fr_0.8fr_1fr] lg:gap-10">
           <div>
             <Link
               to="/"
-              aria-label="WorthPrime Tax home"
+              aria-label={t("common.homeAria")}
               className={`inline-flex flex-col items-center ${focusRing}`}
             >
               <img
                 src={logoImage}
-                alt="WorthPrime Tax"
+                alt={t("common.brand")}
                 width={600}
                 height={383}
                 loading="lazy"
@@ -91,11 +94,11 @@ export function Footer() {
               />
               {/* Tagline as live text, not part of the logo image. */}
               <span className="mt-1.5 text-[0.5625rem] leading-none font-medium whitespace-nowrap text-primary max-sm:text-[0.5rem]">
-                Your Compliance Partner!
+                {t("common.tagline")}
               </span>
             </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
-              One partner. Multiple financial needs. Connected solutions.
+              {t("footer.tagline")}
             </p>
 
             <ul className="mt-5 space-y-2.5">
@@ -103,21 +106,21 @@ export function Footer() {
                 href={LINKS.phoneHref}
                 icon={<Phone className="size-5" strokeWidth={1.5} />}
               >
-                {LINKS.phone}
+                <span dir="ltr">{LINKS.phone}</span>
               </ContactLink>
               <ContactLink
                 href={LINKS.whatsapp}
                 external
-                label={`Chat on WhatsApp ${LINKS.phone}`}
+                label={t("footer.chatOnWhatsapp", { phone: LINKS.phone })}
                 icon={<WhatsAppIcon className="size-5" />}
               >
-                WhatsApp
+                {t("contact.whatsapp")}
               </ContactLink>
               <ContactLink
                 href={`mailto:${LINKS.email}`}
                 icon={<Mail className="size-5" strokeWidth={1.5} />}
               >
-                {LINKS.email}
+                <span dir="ltr">{LINKS.email}</span>
               </ContactLink>
             </ul>
 
@@ -132,13 +135,16 @@ export function Footer() {
                         href={href}
                         target="_blank"
                         rel="noreferrer noopener"
-                        aria-label={`WorthPrime Tax on ${label}`}
+                        aria-label={t("footer.socialAria", { network: label })}
                         className={`${circle} hover:bg-primary hover:text-primary-foreground ${focusRing}`}
                       >
                         <Icon className="size-4" aria-hidden />
                       </a>
                     ) : (
-                      <span className={circle} title={`${label} [client to supply]`}>
+                      <span
+                        className={circle}
+                        title={t("footer.socialPending", { network: label })}
+                      >
                         <Icon className="size-4" aria-hidden />
                       </span>
                     )}
@@ -148,10 +154,10 @@ export function Footer() {
             </ul>
           </div>
 
-          <nav aria-label="Services">
-            <ColumnHeading>Services</ColumnHeading>
+          <nav aria-label={t("footer.services")}>
+            <ColumnHeading>{t("footer.services")}</ColumnHeading>
             <ul className="mt-5 space-y-3 max-sm:mt-4 max-sm:space-y-2.5">
-              {SERVICES.slice(0, 6).map((s) => {
+              {services.slice(0, 6).map((s) => {
                 const Icon = SERVICE_ICONS[s.slug] ?? FileText;
                 return (
                   <li key={s.slug}>
@@ -175,23 +181,23 @@ export function Footer() {
               to="/services"
               className={`group mt-5 inline-flex items-center gap-2 text-sm font-semibold text-link-accent transition-colors hover:text-footer-link-hover ${focusRing}`}
             >
-              All Services
-              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+              {t("common.allServices")}
+              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" />
             </Link>
           </nav>
 
-          <nav aria-label="Company">
-            <ColumnHeading>Company</ColumnHeading>
+          <nav aria-label={t("footer.company")}>
+            <ColumnHeading>{t("footer.company")}</ColumnHeading>
             <ul className="mt-3 max-w-56 max-sm:grid max-sm:max-w-none max-sm:grid-cols-2 max-sm:gap-x-6">
-              <FooterRowLink to="/about">About Us</FooterRowLink>
-              <FooterRowLink to="/contact">Contact Us</FooterRowLink>
-              <FooterRowLink href={LINKS.uaeTaxPayment}>UAE Tax Payment</FooterRowLink>
-              <FooterRowLink href={LINKS.irs}>IRS Refund Status</FooterRowLink>
+              <FooterRowLink to="/about">{t("common.aboutUs")}</FooterRowLink>
+              <FooterRowLink to="/contact">{t("common.contactUs")}</FooterRowLink>
+              <FooterRowLink href={LINKS.uaeTaxPayment}>{t("common.uaeTaxPayment")}</FooterRowLink>
+              <FooterRowLink href={LINKS.irs}>{t("common.irsRefundStatus")}</FooterRowLink>
             </ul>
           </nav>
 
           <div>
-            <ColumnHeading>Office</ColumnHeading>
+            <ColumnHeading>{t("footer.office")}</ColumnHeading>
             <ul className="mt-3 divide-y divide-border">
               {OFFICES.map((o) => (
                 <li key={o.label} className="flex gap-3 py-3 first:pt-2 last:pb-0">
@@ -200,10 +206,12 @@ export function Footer() {
                   </span>
                   <address className="min-w-0 not-italic">
                     <span className="block text-[0.7rem] font-bold tracking-[0.14em] text-footer-heading uppercase">
-                      {o.label}
+                      {t("contact.officeLabel")}
                     </span>
                     <span className="mt-1 block text-sm leading-snug text-footer-link">
-                      {o.address}
+                      <span lang="en" dir="ltr">
+                        {o.address}
+                      </span>
                     </span>
                   </address>
                 </li>
@@ -215,21 +223,21 @@ export function Footer() {
         {/* Copyright centred; policy links on the right (both centred and stacked on phones). */}
         <div className="grid items-center gap-3 border-t border-border py-4 text-center sm:grid-cols-[1fr_auto_1fr]">
           <p className="text-xs text-muted-foreground sm:col-start-2">
-            © {new Date().getFullYear()} WorthPrime. All rights reserved.
+            {t("footer.rights", { year: new Date().getFullYear() })}
           </p>
           <p className="flex items-center justify-center gap-3 text-xs text-muted-foreground sm:justify-self-end">
             <Link
               to="/privacy-policy"
               className={`hover:text-footer-link-hover hover:underline ${focusRing}`}
             >
-              Privacy Policy
+              {t("footer.privacy")}
             </Link>
             <span aria-hidden className="h-3 w-px bg-border" />
             <Link
               to="/terms-of-use"
               className={`hover:text-footer-link-hover hover:underline ${focusRing}`}
             >
-              Terms of Use
+              {t("footer.terms")}
             </Link>
           </p>
         </div>
@@ -253,7 +261,7 @@ function FooterRowLink({
       <span className="group-hover:underline">{children}</span>
       <ChevronRight
         aria-hidden
-        className="size-4 shrink-0 text-muted-foreground transition-transform max-sm:hidden group-hover:translate-x-0.5 group-hover:text-footer-link-hover"
+        className="size-4 shrink-0 text-muted-foreground transition-transform max-sm:hidden group-hover:translate-x-0.5 group-hover:text-footer-link-hover rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5"
       />
     </>
   );

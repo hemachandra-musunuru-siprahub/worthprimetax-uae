@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { Service } from "@/data/services";
 import { cn } from "@/lib/utils";
 import logoImage from "@/assets/worthprime-logo-2026.webp";
@@ -13,7 +14,8 @@ function Pill({
   dotRef,
 }: {
   text: string;
-  dot?: "left" | "right";
+  /** Side of the pill facing the centre circle (logical, so it follows the reading direction). */
+  dot?: "start" | "end";
   dotRef?: (n: HTMLSpanElement | null) => void;
 }) {
   return (
@@ -25,7 +27,7 @@ function Pill({
           aria-hidden
           className={cn(
             "absolute top-1/2 size-3 -translate-y-1/2 rounded-full border-2 border-brand-secondary bg-card",
-            dot === "right" ? "-right-1.5" : "-left-1.5",
+            dot === "end" ? "-end-1.5" : "-start-1.5",
           )}
         />
       )}
@@ -33,8 +35,11 @@ function Pill({
   );
 }
 
-/** Curves from each pill's dot to the edge of the centre circle, measured from the layout. */
-function useConnectors(count: number) {
+/**
+ * Curves from each pill's dot to the edge of the centre circle, measured from the layout.
+ * `layoutKey` changes with the text (e.g. on a language switch) so the curves are measured again.
+ */
+function useConnectors(count: number, layoutKey: string) {
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const circleRef = useRef<HTMLDivElement | null>(null);
   const dotRefs = useRef<Array<HTMLSpanElement | null>>([]);
@@ -71,7 +76,7 @@ function useConnectors(count: number) {
     const observer = new ResizeObserver(measure);
     observer.observe(wrap);
     return () => observer.disconnect();
-  }, [count]);
+  }, [count, layoutKey]);
 
   return { wrapRef, circleRef, dotRefs, paths };
 }
@@ -91,7 +96,11 @@ export function CapabilityShowcase({
   const half = Math.ceil(items.length / 2);
   const left = items.slice(0, half);
   const right = items.slice(half);
-  const { wrapRef, circleRef, dotRefs, paths } = useConnectors(items.length);
+  const { i18n } = useTranslation();
+  const { wrapRef, circleRef, dotRefs, paths } = useConnectors(
+    items.length,
+    `${i18n.language}:${items.join("|")}`,
+  );
 
   return (
     <section
@@ -103,12 +112,12 @@ export function CapabilityShowcase({
     >
       <Container className="max-w-[1540px] lg:px-10">
         <div className="flex items-center justify-center gap-4" aria-hidden>
-          <span className="h-px w-16 bg-linear-to-r from-transparent to-brand-secondary/60 sm:w-32" />
+          <span className="h-px w-16 bg-linear-to-r from-transparent to-brand-secondary/60 sm:w-32 rtl:bg-linear-to-l" />
           {/* The mark only: the wordmark under it is clipped off. */}
           <span className="block h-6 overflow-hidden">
             <img src={logoImage} alt="" width={600} height={383} className="h-[2.15rem] w-auto" />
           </span>
-          <span className="h-px w-16 bg-linear-to-l from-transparent to-brand-secondary/60 sm:w-32" />
+          <span className="h-px w-16 bg-linear-to-l from-transparent to-brand-secondary/60 sm:w-32 rtl:bg-linear-to-r" />
         </div>
         <h2
           id="capabilities-heading"
@@ -141,7 +150,7 @@ export function CapabilityShowcase({
               <Pill
                 key={c}
                 text={c}
-                dot="right"
+                dot="end"
                 dotRef={(n) => {
                   dotRefs.current[i] = n;
                 }}
@@ -154,7 +163,7 @@ export function CapabilityShowcase({
               <Pill
                 key={c}
                 text={c}
-                dot="left"
+                dot="start"
                 dotRef={(n) => {
                   dotRefs.current[half + i] = n;
                 }}
@@ -197,7 +206,7 @@ export function CapabilityShowcase({
           >
             {service.cta}
             <ArrowRight
-              className="size-4 shrink-0 transition-transform group-hover:translate-x-0.5"
+              className="size-4 shrink-0 transition-transform group-hover:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5"
               aria-hidden
             />
           </Link>
@@ -208,6 +217,7 @@ export function CapabilityShowcase({
 }
 
 function Centerpiece({ circleRef }: { circleRef: RefObject<HTMLDivElement | null> }) {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center">
       <div
@@ -218,7 +228,7 @@ function Centerpiece({ circleRef }: { circleRef: RefObject<HTMLDivElement | null
         <div className="relative size-full overflow-hidden rounded-full bg-card">
           <img
             src={brandWallImage}
-            alt="WorthPrime logo and the line Your Compliance Partner! on a marble office wall"
+            alt={t("serviceDetail.showcaseImageAlt")}
             width={1672}
             height={941}
             loading="lazy"

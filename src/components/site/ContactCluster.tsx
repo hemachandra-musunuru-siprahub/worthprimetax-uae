@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { useTranslation } from "react-i18next";
 import { LINKS } from "@/data/site";
 import { cn } from "@/lib/utils";
 
@@ -56,46 +57,51 @@ const mail = "border-border bg-background";
 const items = [
   {
     href: LINKS.whatsapp,
-    label: "Chat on WhatsApp",
+    labelKey: "quickContact.whatsapp",
     Icon: WhatsAppIcon,
     external: true,
     className: whatsapp,
   },
   {
     href: LINKS.phoneHref,
-    label: `Call ${LINKS.phone}`,
+    labelKey: "quickContact.call",
     Icon: PhoneIcon,
     external: false,
     className: call,
   },
   {
     href: `mailto:${LINKS.email}`,
-    label: `Email ${LINKS.email}`,
+    labelKey: "quickContact.email",
     Icon: MailIcon,
     external: false,
     className: mail,
   },
-];
+] as const;
 
 // Shown on every page so the quick contact buttons are always in the same place.
+// It sits on the end side: right in English, left in Arabic.
 export function ContactCluster() {
+  const { t } = useTranslation();
   return (
     <nav
-      aria-label="Quick contact"
-      className="fixed bottom-4 right-4 z-40 flex flex-col gap-3 sm:bottom-5 sm:right-5"
+      aria-label={t("quickContact.label")}
+      className="fixed end-4 bottom-4 z-40 flex flex-col gap-3 sm:end-5 sm:bottom-5"
     >
-      {items.map(({ href, label, Icon, external, className }) => (
-        <a
-          key={label}
-          href={href}
-          aria-label={label}
-          title={label}
-          {...(external ? { target: "_blank", rel: "noreferrer noopener" } : {})}
-          className={cn(button, interactive, className)}
-        >
-          <Icon className="size-6 sm:size-7" />
-        </a>
-      ))}
+      {items.map(({ href, labelKey, Icon, external, className }) => {
+        const label = t(labelKey, { phone: LINKS.phone, email: LINKS.email });
+        return (
+          <a
+            key={href}
+            href={href}
+            aria-label={label}
+            title={label}
+            {...(external ? { target: "_blank", rel: "noreferrer noopener" } : {})}
+            className={cn(button, interactive, className)}
+          >
+            <Icon className="size-6 sm:size-7" />
+          </a>
+        );
+      })}
     </nav>
   );
 }
