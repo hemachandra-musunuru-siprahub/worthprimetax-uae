@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { seoHead } from "@/lib/seo";
+import { useTranslation } from "react-i18next";
+import { pageHead } from "@/lib/seo";
 import { useState } from "react";
 import { ExternalLink } from "lucide-react";
-import { AUDIENCES, SERVICES, type Audience } from "@/data/services";
+import { AUDIENCES, type Audience } from "@/data/services";
+import { useServices } from "@/i18n/content";
 import { LINKS } from "@/data/site";
 import { Reveal, Section } from "@/components/site/primitives";
 import { ServiceCard } from "@/components/site/ServiceCard";
@@ -13,24 +15,23 @@ import { ServiceMarquee } from "@/components/site/ServiceMarquee";
 import { cn } from "@/lib/utils";
 import heroBackdrop from "@/assets/service-pages/hero-backdrop.webp";
 
-const TITLE = "Services | WorthPrime Tax";
-const DESCRIPTION =
-  "Corporate Tax, VAT, accounting, company incorporation, payroll, PRO / Visa, U.S. expat tax, audit, e-invoicing and AML services in Dubai, UAE.";
-
 export const Route = createFileRoute("/services/")({
-  head: () => seoHead({ title: TITLE, description: DESCRIPTION, path: "/services" }),
+  head: ({ match }) => pageHead(match.context.lng, "services", "/services"),
   component: ServicesPage,
 });
 
 function ServicesPage() {
+  const { t } = useTranslation();
+  const services = useServices();
+  // Filter values stay English identifiers; only their labels are translated.
   const [filter, setFilter] = useState<"All" | Audience>("All");
-  const shown = filter === "All" ? SERVICES : SERVICES.filter((s) => s.audience === filter);
+  const shown = filter === "All" ? services : services.filter((s) => s.audience === filter);
 
   return (
     <>
       <BackdropHero
-        lines={[[{ text: "Our Services" }]]}
-        intro="From UAE Corporate Tax and VAT to U.S. tax filing, bookkeeping, payroll, company formation and IRS compliance, we bring the right expertise together under one trusted relationship."
+        lines={[[{ text: t("servicesPage.heading") }]]}
+        intro={t("servicesPage.intro")}
         image={heroBackdrop}
       />
 
@@ -38,7 +39,7 @@ function ServicesPage() {
 
       <Section className="pt-10 sm:pt-14">
         {/* The cards carry h3 names; this keeps the outline h1 → h2 → h3 without changing the look. */}
-        <h2 className="sr-only">All Services</h2>
+        <h2 className="sr-only">{t("servicesPage.allServices")}</h2>
         <div className="flex flex-wrap gap-2">
           {AUDIENCES.map((a) => (
             <button
@@ -53,7 +54,7 @@ function ServicesPage() {
                   : "border-border text-foreground/80 hover:bg-accent",
               )}
             >
-              {a}
+              {t(`servicesPage.audiences.${a}`)}
             </button>
           ))}
         </div>
@@ -76,14 +77,12 @@ function ServicesPage() {
           className="surface-card flex flex-wrap items-center justify-between gap-4 p-7 transition-colors hover:border-primary/60"
         >
           <div>
-            <p className="label-slash">IRS Tool</p>
-            <h3 className="mt-2 text-2xl">Check Your IRS Refund Status</h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Opens the official IRS refund tracker in a new tab.
-            </p>
+            <p className="label-slash">{t("servicesPage.irsLabel")}</p>
+            <h3 className="mt-2 text-2xl">{t("servicesPage.irsHeading")}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">{t("servicesPage.irsBody")}</p>
           </div>
           <span className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-hero-foreground">
-            Open Tool <ExternalLink className="size-4" />
+            {t("servicesPage.openTool")} <ExternalLink className="size-4" aria-hidden />
           </span>
         </a>
       </Section>

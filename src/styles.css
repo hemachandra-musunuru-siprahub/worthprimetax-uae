@@ -200,6 +200,46 @@
   }
 }
 
+/*
+ * Arabic: Open Sans and Source Serif 4 have no Arabic letters, so every font role switches to
+ * Noto Sans Arabic (loaded in __root.tsx). Letter-spacing pulls Arabic letters apart so they no
+ * longer join, and Arabic has no capitals, so tracking and uppercase are reset.
+ */
+:root:lang(ar) {
+  --font-display: "Noto Sans Arabic", "Open Sans", system-ui, sans-serif;
+  --font-sans: "Noto Sans Arabic", "Open Sans", system-ui, sans-serif;
+  --font-serif: "Noto Sans Arabic", "Open Sans", system-ui, sans-serif;
+}
+
+:lang(ar) .font-sans,
+:lang(ar) .font-serif,
+:lang(ar) .font-display {
+  font-family: "Noto Sans Arabic", "Open Sans", system-ui, sans-serif;
+}
+
+:lang(ar) * {
+  letter-spacing: normal !important;
+}
+
+:lang(ar) .uppercase,
+:lang(ar) .label-slash {
+  text-transform: none;
+}
+
+/* In RTL the track starts at the right edge, so it scrolls towards the right instead. */
+[dir="rtl"] .marquee-track {
+  animation-name: wp-marquee-rtl;
+}
+
+@keyframes wp-marquee-rtl {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(50%);
+  }
+}
+
 @keyframes wp-marquee {
   from {
     transform: translateX(0);

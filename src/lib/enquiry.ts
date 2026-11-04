@@ -2,6 +2,15 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { getCountryCode } from "@/data/countryCodes";
 import { SERVICES } from "@/data/services";
+import { tFor } from "@/i18n/i18n";
+import type en from "@/locales/en/translation.json";
+
+/**
+ * Validation messages are translation keys under `enquiry.errors`; the form shows them with t().
+ * The server only needs pass/fail, so it never translates them.
+ */
+export type EnquiryErrorKey = `enquiry.errors.${keyof typeof en.enquiry.errors}`;
+const msg = (key: keyof typeof en.enquiry.errors): EnquiryErrorKey => `enquiry.errors.${key}`;
 
 /** Dropdown value for a service not in the list; the visitor then describes it in `otherService`. */
 export const OTHER_SERVICE = "other";
@@ -13,79 +22,61 @@ const serviceSlugs: [string, ...string[]] = [OTHER_SERVICE, ...SERVICES.map((s) 
  * looks valid. These are length and prefix checks, not proof the line exists. A number typed
  * with its own "+" code is checked as a full international (E.164) number instead.
  */
-function phoneNumberProblem(iso: string, phone: string): string | null {
+function phoneNumberProblem(iso: string, phone: string): EnquiryErrorKey | null {
   const digits = phone.replace(/\D/g, "");
   if (phone.trim().startsWith("+")) {
-    return digits.length >= 8 && digits.length <= 15
-      ? null
-      : "Please enter the full international number (8 to 15 digits).";
+    return digits.length >= 8 && digits.length <= 15 ? null : msg("phoneInternational");
   }
 
   const country = getCountryCode(iso);
-  if (!country) return "Please choose a country code.";
+  if (!country) return msg("countryRequired");
   const dialDigits = country.dial.replace(/\D/g, "");
 
   // United States and Canada: 10 digits; area code and exchange never start with 0 or 1.
   if (iso === "US" || iso === "CA") {
     const national = digits.length === 11 && digits.startsWith("1") ? digits.slice(1) : digits;
     if (/^[2-9]\d{2}[2-9]\d{6}$/.test(national)) return null;
-    return iso === "US"
-      ? "Please enter a valid 10-digit U.S. phone number."
-      : "Please enter a valid 10-digit Canadian phone number.";
+    return iso === "US" ? msg("phoneUS") : msg("phoneCA");
   }
   // Other "+1 xxx" countries: the dial code already includes the area code.
   if (dialDigits.length === 4 && dialDigits.startsWith("1")) {
-    return digits.length === 7 ? null : "Please enter the 7-digit local number.";
+    return digits.length === 7 ? null : msg("phoneLocal7");
   }
 
   // Elsewhere a leading 0 is the local trunk prefix and is not part of the number.
   const national = digits.replace(/^0/, "");
   if (iso === "IN") {
-    return /^[1-9]\d{9}$/.test(national)
-      ? null
-      : "Please enter a valid 10-digit Indian phone number.";
+    return /^[1-9]\d{9}$/.test(national) ? null : msg("phoneIN");
   }
   if (iso === "AE") {
-    return /^\d{8,9}$/.test(national)
-      ? null
-      : "Please enter a valid UAE phone number (8 or 9 digits).";
+    return /^\d{8,9}$/.test(national) ? null : msg("phoneAE");
   }
   const maxNational = 15 - dialDigits.length;
-  return national.length >= 6 && national.length <= maxNational
-    ? null
-    : "Please enter a valid phone number for the selected country.";
+  return national.length >= 6 && national.length <= maxNational ? null : msg("phoneOther");
 }
 
 /** Shared by the form (instant feedback) and the server function (the real check). */
 export const enquirySchema = z
   .object({
-    name: z
-      .string()
-      .trim()
-      .min(2, "Please enter your name.")
-      .max(100, "Please keep your name under 100 characters."),
+    name: z.string().trim().min(2, msg("nameRequired")).max(100, msg("nameTooLong")),
     email: z
       .string()
       .trim()
-      .min(1, "Please enter your email address.")
-      .email("Please enter a valid email address.")
-      .max(200, "Please keep your email under 200 characters."),
+      .min(1, msg("emailRequired"))
+      .email(msg("emailInvalid"))
+      .max(200, msg("emailTooLong")),
     // ISO country code chosen beside the phone field; its dialling code is added on delivery.
     phoneCountry: z
       .string()
-      .refine((iso) => getCountryCode(iso) !== undefined, "Please choose a country code."),
+      .refine((iso) => getCountryCode(iso) !== undefined, msg("countryRequired")),
     phone: z
       .string()
       .trim()
-      .min(1, "Please enter your phone number.")
-      .regex(/^\+?[\d\s().-]+$/, "Use digits, spaces and + ( ) - only."),
-    service: z.enum(serviceSlugs, { errorMap: () => ({ message: "Please choose a service." }) }),
-    otherService: z.string().trim().max(200, "Please keep this under 200 characters.").optional(),
-    message: z
-      .string()
-      .trim()
-      .min(10, "Please add a few words (at least 10 characters).")
-      .max(2000, "Please keep your message under 2,000 characters."),
+      .min(1, msg("phoneRequired"))
+      .regex(/^\+?[\d\s().-]+$/, msg("phoneCharacters")),
+    service: z.enum(serviceSlugs, { errorMap: () => ({ message: msg("serviceRequired") }) }),
+    otherService: z.string().trim().max(200, msg("otherServiceTooLong")).optional(),
+    message: z.string().trim().min(10, msg("messageTooShort")).max(2000, msg("messageTooLong")),
     // Honeypot: hidden from people, so anything typed here came from a bot.
     website: z.string().max(200).optional(),
   })
@@ -101,7 +92,7 @@ export const enquirySchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["otherService"],
-        message: "Please tell us which service you need.",
+        message: msg("otherServiceRequired"),
       });
     }
   });
@@ -133,10 +124,14 @@ export const submitEnquiry = createServerFn({ method: "POST" })
     const dial = getCountryCode(data.phoneCountry)?.dial ?? "";
     const fullPhone = data.phone.startsWith("+") ? data.phone : `${dial} ${data.phone}`.trim();
 
+    // The webhook always receives the English service name, whatever language the visitor used.
+    const meta = SERVICES.find((s) => s.slug === data.service);
     const service =
       data.service === OTHER_SERVICE
         ? `Other: ${data.otherService ?? ""}`
-        : (SERVICES.find((s) => s.slug === data.service)?.name ?? data.service);
+        : meta
+          ? tFor("en")(`services.${meta.slug}.name`)
+          : data.service;
     try {
       const response = await fetch(webhookUrl, {
         method: "POST",

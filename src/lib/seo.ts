@@ -1,4 +1,5 @@
 import { LINKS, SITE } from "@/data/site";
+import { tFor, type Language } from "@/i18n/i18n";
 // Temporary social sharing image (see SITE in src/data/site.ts): needs client approval.
 import socialImage from "@/assets/social-share.jpg";
 import logoImage from "@/assets/worthprime-logo-2026.webp";
@@ -7,16 +8,33 @@ export function absoluteUrl(path: string) {
   return new URL(path, SITE.url).toString();
 }
 
+const OG_LOCALES: Record<Language, string> = { en: "en_AE", ar: "ar_AE" };
+
+type PageMetaKey = "home" | "about" | "services" | "contact" | "privacy" | "terms";
+
+/** seoHead() for a page whose title and description live under `meta.<page>` in the translations. */
+export function pageHead(lng: Language, page: PageMetaKey, path: string) {
+  const t = tFor(lng);
+  return seoHead({
+    title: t(`meta.${page}.title`),
+    description: t(`meta.${page}.description`),
+    path,
+    lng,
+  });
+}
+
 /** Title, description, canonical, Open Graph and Twitter tags for one indexable page. */
 export function seoHead({
   title,
   description,
   path,
+  lng,
   type = "website",
 }: {
   title: string;
   description: string;
   path: string;
+  lng: Language;
   type?: "website" | "article";
 }) {
   const url = absoluteUrl(path);
@@ -27,6 +45,7 @@ export function seoHead({
       { name: "description", content: description },
       { property: "og:title", content: title },
       { property: "og:description", content: description },
+      { property: "og:locale", content: OG_LOCALES[lng] },
       { property: "og:type", content: type },
       { property: "og:url", content: url },
       { property: "og:site_name", content: SITE.name },
@@ -74,10 +93,11 @@ export function siteJsonLd() {
 
 export type Crumb = { name: string; path: string };
 
-export function serviceCrumbs(service: { slug: string; name: string }): Crumb[] {
+export function serviceCrumbs(service: { slug: string; name: string }, lng: Language): Crumb[] {
+  const t = tFor(lng);
   return [
-    { name: "Home", path: "/" },
-    { name: "Services", path: "/services" },
+    { name: t("common.home"), path: "/" },
+    { name: t("common.services"), path: "/services" },
     { name: service.name, path: `/services/${service.slug}` },
   ];
 }
