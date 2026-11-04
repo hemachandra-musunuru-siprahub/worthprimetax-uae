@@ -339,9 +339,10 @@ function ProofSection() {
 
           <Reveal className="min-w-0">
             <div className="relative overflow-hidden rounded-2xl border border-brand-secondary/20 bg-card shadow-[0_24px_60px_-28px] shadow-primary/35">
+              {/* Decorative: the section copy beside it carries the message. */}
               <img
                 src={workspaceImage}
-                alt="WorthPrime Tax services — tax, accounting, payroll, audit, business formation, compliance and financial planning — connected around a financial dashboard"
+                alt=""
                 width={1672}
                 height={941}
                 loading="lazy"
